@@ -8,7 +8,7 @@
   "files": [
     "npm-scripts.mjs",
     "lib",
-    "shared-types"
+    "src/shared-types"
   ],
   "engines": {
     "node": ">=16"
