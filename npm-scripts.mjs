@@ -124,25 +124,32 @@ function replaceVersion()
 {
 	logInfo('replaceVersion()');
 
-	const files = fs.readdirSync('lib',
-		{
-			withFileTypes : true,
-			recursive     : true
-		});
-
-	for (const file of files)
-	{
-		if (!file.isFile())
-		{
-			continue;
+	const processFile = (filePath) => {
+		if (!filePath.endsWith('.d.ts')) {
+			return;
 		}
 
-		const filePath = path.join('lib', file.name);
 		const text = fs.readFileSync(filePath, { encoding: 'utf8' });
 		const result = text.replace(/__MEDIASOUP_CLIENT_VERSION__/g, PKG.version);
 
 		fs.writeFileSync(filePath, result, { encoding: 'utf8' });
-	}
+	};
+
+	const traverseDirectory = (dir) => {
+		const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+		for (const entry of entries) {
+			const fullPath = path.join(dir, entry.name);
+
+			if (entry.isDirectory()) {
+				traverseDirectory(fullPath);
+			} else if (entry.isFile()) {
+				processFile(fullPath);
+			}
+		}
+	};
+
+	traverseDirectory('lib');
 }
 
 function deleteLib()
@@ -176,29 +183,39 @@ function buildTypescript(force = false)
 
 	deleteLib();
 	executeCmd('tsc');
-	generateTypeExports();
-}
 
-function generateTypeExports() {
-	logInfo('generateTypeExports()');
-
-	const typesDir = path.resolve('shared-types');
-	const indexFilePath = path.resolve('src', 'index.ts');
-
-	if (!fs.existsSync(typesDir)) {
-		logError(`Types directory not found: ${typesDir}`);
-		return;
+	// Copy the shared-types folder to the lib directory
+	const sharedTypesDir = path.resolve('src', 'shared-types');
+	const libSharedTypesDir = path.resolve('lib', 'shared-types');
+	if (fs.existsSync(sharedTypesDir)) {
+		fs.mkdirSync(libSharedTypesDir, { recursive: true });
+		fs.readdirSync(sharedTypesDir).forEach(file => {
+			fs.copyFileSync(path.join(sharedTypesDir, file), path.join(libSharedTypesDir, file));
+		});
+		logInfo('Copied shared-types to lib directory.');
 	}
-
-	const typeFiles = fs.readdirSync(typesDir).filter(file => file.endsWith('.ts'));
-	const exportStatements = typeFiles.map(file => `export * from '../shared-types/${file.replace('.ts', '')}';`).join('\n');
-
-	const indexContent = fs.readFileSync(indexFilePath, 'utf8');
-	const updatedContent = indexContent + '\n' + exportStatements + '\n';
-
-	fs.writeFileSync(indexFilePath, updatedContent, 'utf8');
-	logInfo('Type exports generated successfully.');
 }
+
+// function generateTypeExports() {
+// 	logInfo('generateTypeExports()');
+
+// 	const typesDir = path.resolve('shared-types');
+// 	const indexFilePath = path.resolve('src', 'index.ts');
+
+// 	if (!fs.existsSync(typesDir)) {
+// 		logError(`Types directory not found: ${typesDir}`);
+// 		return;
+// 	}
+
+// 	const typeFiles = fs.readdirSync(typesDir).filter(file => file.endsWith('.ts'));
+// 	const exportStatements = typeFiles.map(file => `export * from '../shared-types/${file.replace('.ts', '')}';`).join('\n');
+
+// 	const indexContent = fs.readFileSync(indexFilePath, 'utf8');
+// 	const updatedContent = indexContent + '\n' + exportStatements + '\n';
+
+// 	fs.writeFileSync(indexFilePath, updatedContent, 'utf8');
+// 	logInfo('Type exports generated successfully.');
+// }
 
 function lint()
 {
@@ -227,10 +244,10 @@ function installDeps()
 {
 	logInfo('installDeps()');
 
-	// Install/update deps.
-	executeCmd('npm ci --ignore-scripts');
-	// Update package-lock.json.
-	executeCmd('npm install --package-lock-only --ignore-scripts');
+	// Install/update deps using pnpm.
+	executeCmd('pnpm install --frozen-lockfile');
+	// Update pnpm-lock.yaml if necessary.
+	executeCmd('pnpm install --lockfile-only');
 }
 
 function checkRelease()

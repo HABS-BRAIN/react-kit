@@ -20,13 +20,13 @@ export {
   generateUniqueColor,
 }
 
-export * from '../shared-types/device-config';
-export * from '../shared-types/dto.d';
-export * from '../shared-types/emotions';
-export * from '../shared-types/form';
-export * from '../shared-types/media';
-export * from '../shared-types/organization';
-export * from '../shared-types/protocol';
-export * from '../shared-types/socket';
-export * from '../shared-types/study';
-export * from '../shared-types/user';
+export * from './shared-types/device-config';
+export * from './shared-types/dto';
+export * from './shared-types/emotions';
+export * from './shared-types/form';
+export * from './shared-types/media';
+export * from './shared-types/organization';
+export * from './shared-types/protocol';
+export * from './shared-types/socket';
+export * from './shared-types/study';
+export * from './shared-types/user';
