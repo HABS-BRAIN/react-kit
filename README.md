@@ -1,4 +1,4 @@
-# DevMasters shared logic
+# HABS shared logic and interfaces for typescript apps.
 
 to publish new dev version please use `npm run release:dev` it will make and push new tag for this package like: _X.X.X+1_
 
