@@ -1,5 +1,6 @@
 import type { SliderSingleProps } from 'antd'
 import { ProtocolMedia } from './media'
+import { CSSProperties } from 'react'
 
 export interface Protocol {
   _id: string
@@ -52,12 +53,15 @@ type PersonalizedContent = {
   }
 }
 
-export type StepContent =
+export type StepContent = (
   | TextContent
   | ImageContent
   | AudioContent
   | VideoContent
   | PersonalizedContent
+) & {
+  style?: CSSProperties
+}
 
 type GoNextAutoplay = {
   type: 'autoplay'
