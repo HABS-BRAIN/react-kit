@@ -2,6 +2,10 @@ import type { SliderSingleProps } from 'antd'
 import { ProtocolMedia } from './media'
 import { CSSProperties } from 'react'
 
+export const DEFAULT_STEP_CONTENT_STYLE: CSSProperties = {
+  backgroundColor: '#000000',
+  color: '#FFFFFF',
+}
 export interface Protocol {
   _id: string
   title: string
