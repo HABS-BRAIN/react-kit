@@ -1,6 +1,7 @@
 import type { SliderSingleProps } from 'antd'
 import { ProtocolMedia } from './media'
 import { CSSProperties } from 'react'
+import { KeycloakUser } from './user'
 
 export const DEFAULT_STEP_CONTENT_STYLE: CSSProperties = {
   backgroundColor: '#000000',
@@ -13,6 +14,7 @@ export interface Protocol {
   template?: boolean //if some step content type is personalized, then template is true )
   templateId?: string //id of the protocol which was used as template
   belongsToParticipant?: string //if protocol is personalized for participant, then this field is set
+  participant?: KeycloakUser
   estimatedDuration: {
     total: number
     videos: number
