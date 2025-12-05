@@ -25,7 +25,6 @@ export interface Protocol {
 export type Step = Partial<{
   content: StepContent
   goNext: GoNextStrategy
-  tagging: boolean
 }>
 
 type TextContent = {
@@ -71,6 +70,8 @@ type GoNextAutoplay = {
   type: 'autoplay'
   duration: number
   notifyStepEnds: true
+  notifyStepStarts: true
+  isCountdownPresented: boolean
 }
 
 type GoNextWhenMediaEnds = {

@@ -79,6 +79,7 @@ export interface ProtocolPlayerClientEvents {
 
 export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   PLAY_STEP_ENDS_SOUND: () => void;
+  PLAY_STEP_STARTS_SOUND: () => void;
   PARTICIPANT_SELECTED: (data: SelectedParticipantPayload) => void;
   PROTOCOL_SELECTED_BY_OPERATOR: (protocol: Protocol) => void;
 }
