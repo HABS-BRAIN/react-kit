@@ -22,10 +22,10 @@ export interface Protocol {
   steps: Step[]
 }
 
-export type Step = Partial<{
+export type Step = {
   content: StepContent
   goNext: GoNextStrategy
-}>
+}
 
 type TextContent = {
   type: 'text'
