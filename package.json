@@ -7,7 +7,8 @@
   "types": "lib/index.d.ts",
   "files": [
     "npm-scripts.mjs",
-    "lib"
+    "lib",
+    "resources"
   ],
   "engines": {
     "node": ">=16"
