@@ -94,4 +94,8 @@ export type GoNextSliders = {
   submitButtonText?: string //default is "Submit"
 }
 
-export type GoNextStrategy = GoNextAutoplay | GoNextWhenMediaEnds | GoNextSliders
+export type GoNextCheckbox = {
+  type: 'checkbox'
+}
+
+export type GoNextStrategy = GoNextAutoplay | GoNextWhenMediaEnds | GoNextSliders | GoNextCheckbox
