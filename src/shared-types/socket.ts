@@ -91,5 +91,6 @@ export interface RemoteParticipantClientEvents {
   sliderInputValueChange: (data: any) => void;
   sliderInputValueChangeComplete: (data: any) => void;
   submitSlidersValues: (data: any) => void;
+  submitCheckboxValues: (data: any) => void;
   // participantLaunchProtocol: (data: any) => void; //I removed this button from tablet. Protocol should be started by operator from the protocol player browser. Otherwise video/audio will not be playing as this window stays untouched
 }
