@@ -43,11 +43,13 @@ type ImageContent = {
 type AudioContent = {
   type: 'audio'
   audio: ProtocolMedia
+  maxDuration?: number
 }
 
 type VideoContent = {
   type: 'video'
   video: ProtocolMedia
+  maxDuration?: number
 }
 
 type PersonalizedContent = {
