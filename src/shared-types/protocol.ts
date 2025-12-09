@@ -27,6 +27,7 @@ export interface Protocol {
 export type Step = {
   content: StepContent
   goNext: GoNextStrategy
+  meta?: any
 }
 
 type TextContent = {
