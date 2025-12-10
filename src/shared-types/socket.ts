@@ -1,7 +1,7 @@
 import { Socket as IOSocket } from 'socket.io';
 import { KeycloakUser } from './user';
 import { Organization } from './organization';
-import { Protocol, Step } from './protocol';
+import { Protocol, Step, GoNextSliders, GoNextCheckbox } from './protocol';
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser;
@@ -88,11 +88,21 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
 
 export type RemoteParticipantServerEvents = ProtocolPlayerServerEvents;
 
-export interface RemoteParticipantClientEvents {
+export interface RemoteParticipantClientEvents extends InteractionCompletedEvents {
   confirmParticipantIdentity: (data: SelectedParticipantPayload) => void;
   sliderInputValueChange: (data: any) => void;
   sliderInputValueChangeComplete: (data: any) => void;
-  submitSlidersValues: (data: any) => void;
-  submitCheckboxValues: (data: any) => void;
   // participantLaunchProtocol: (data: any) => void; //I removed this button from tablet. Protocol should be started by operator from the protocol player browser. Otherwise video/audio will not be playing as this window stays untouched
 }
+
+interface InteractionCompletedEvents {
+  submitSlidersValues: (data: any) => void;
+  submitCheckboxValues: (data: any) => void;
+}
+
+export const INTERACTION_COMPLETED_EVENT: {
+  [K in GoNextSliders['type'] | GoNextCheckbox['type']]: keyof InteractionCompletedEvents;
+} = {
+  sliders: 'submitSlidersValues',
+  checkbox: 'submitCheckboxValues',
+};
