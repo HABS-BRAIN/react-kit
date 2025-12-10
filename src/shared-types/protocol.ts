@@ -83,6 +83,11 @@ type GoNextWhenMediaEnds = {
   type: 'mediaEnds'
 }
 
+export type GoNextUserInteraction = {
+  type: 'userInteraction',
+  userInteraction: GoNextSliders|GoNextCheckbox[]
+}
+
 export type GoNextSliders = {
   type: 'sliders'
   sliders: {
@@ -99,4 +104,4 @@ export type GoNextCheckbox = {
   type: 'checkbox'
 }
 
-export type GoNextStrategy = GoNextAutoplay | GoNextWhenMediaEnds | GoNextSliders | GoNextCheckbox
+export type GoNextStrategy = GoNextAutoplay | GoNextWhenMediaEnds | GoNextUserInteraction | /* GoNextSliders | GoNextCheckbox to be removed from here: */ GoNextSliders | GoNextCheckbox
