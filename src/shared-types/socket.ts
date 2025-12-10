@@ -83,6 +83,7 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   PARTICIPANT_SELECTED: (data: SelectedParticipantPayload) => void;
   PROTOCOL_SELECTED_BY_OPERATOR: (protocol: Protocol) => void;
   PRESENT_REPLY_FORM: () => void
+  USER_INTERACTION_COMPLETED: (index: number) => void
 }
 
 export type RemoteParticipantServerEvents = ProtocolPlayerServerEvents;

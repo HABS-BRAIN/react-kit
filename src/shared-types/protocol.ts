@@ -74,9 +74,9 @@ export type StepContent = (
 type GoNextAutoplay = {
   type: 'autoplay'
   duration: number
-  notifyStepEnds: true
-  notifyStepStarts: true
-  isCountdownPresented: boolean
+  notifyStepEnds?: boolean
+  notifyStepStarts?: boolean
+  isCountdownPresented?: boolean
 }
 
 type GoNextWhenMediaEnds = {
