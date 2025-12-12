@@ -4,9 +4,10 @@ export type StepMeta = Record<"lslMarkerKey", LSLMarkerKey> & Record<string, any
 
 export const LSLMarkerKey = {
   ...MAIN_EMOTION,
-  PROTOCOL: 'PROTOCOL',
   BASELINE_EYES_OPEN: 'BASELINE_EYES_OPEN',
   BASELINE_EYES_CLOSED: 'BASELINE_EYES_CLOSED',
+  PROTOCOL: 'PROTOCOL',
+  PLAYBACK: 'PLAYBACK',
 } as const
 
 export type LSLMarkerKey = (typeof LSLMarkerKey)[keyof typeof LSLMarkerKey]
@@ -24,6 +25,10 @@ export const MarkerKeyIntV1 = {
 		STARTED: 10004,
 		FINISHED: 10005,
 	},
+  PLAYBACK: {
+    RESUMED: 10006,
+    PAUSED: 10007,
+  },
 	// Emotion markers (XXYYZ):
 	// Negative/Neutral category = 10, Positive/Curiosity category = 11
 	// Z: even = STARTED (0), odd = FINISHED (1)
