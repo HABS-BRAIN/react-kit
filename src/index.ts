@@ -26,6 +26,7 @@ export * from './shared-types/form';
 export * from './shared-types/media';
 export * from './shared-types/organization';
 export * from './shared-types/protocol';
+export * from './shared-types/step-meta';
 export * from './shared-types/socket';
 export * from './shared-types/study';
 export * from './shared-types/user';

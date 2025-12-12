@@ -2,7 +2,7 @@ import type { SliderSingleProps } from 'antd'
 import { ProtocolMedia } from './media'
 import { CSSProperties } from 'react'
 import { KeycloakUser } from './user'
-import { StepMeta } from './stepMeta'
+import { StepMeta } from './step-meta'
 
 export const DEFAULT_STEP_CONTENT_STYLE: CSSProperties = {
   backgroundColor: '#000000',
