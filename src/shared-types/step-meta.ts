@@ -1,6 +1,6 @@
 import { MAIN_EMOTION } from "./emotions"
 
-export type StepMeta = Record<"lslMarkerKey", LSLMarkerKey> & Record<string, any>
+export type StepMeta = { lslMarkerKey?: MarkerKeyWithStart } & Record<string, any>
 
 export const LSLMarkerKey = {
   ...MAIN_EMOTION,
@@ -12,7 +12,15 @@ export const LSLMarkerKey = {
 
 export type LSLMarkerKey = (typeof LSLMarkerKey)[keyof typeof LSLMarkerKey]
 
-export const MarkerKeyIntV1 = {
+export type MarkerKeyWithStart = Exclude<LSLMarkerKey, 'PLAYBACK'>
+
+type StartFinishMarker = { STARTED: number; FINISHED: number }
+type PlaybackMarker = { RESUMED: number; PAUSED: number }
+
+export type MarkerKeyIntV1Type =
+  Record<MarkerKeyWithStart, StartFinishMarker> & { PLAYBACK: PlaybackMarker }
+
+export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
 	PROTOCOL: {
 		STARTED: 10000,
 		FINISHED: 10001,
@@ -81,5 +89,3 @@ export const MarkerKeyIntV1 = {
 		FINISHED: 11201,
 	},
 }
-
-export type MarkerKeyIntV1Type = typeof MarkerKeyIntV1;
