@@ -5,7 +5,15 @@ export type StepMeta = { lslMarkerKey?: MarkerKeyWithStart } & Record<string, an
 export const LSLMarkerKey = {
   ...MAIN_EMOTION,
   BASELINE_EYES_OPEN: 'BASELINE_EYES_OPEN',
+  BASELINE_EYES_OPEN_NO_BLINKS: 'BASELINE_EYES_OPEN_NO_BLINKS',
   BASELINE_EYES_CLOSED: 'BASELINE_EYES_CLOSED',
+  BLINKS: 'BLINKS',
+  MOVE_EYES_LR: 'MOVE_EYES_LR',
+  MOVE_EYES_UD: "MOVE_EYES_UD",
+  MOVE_HEAD_LR: 'MOVE_HEAD_LR',
+  MOVE_HEAD_UD: 'MOVE_HEAD_UD',
+  CLENCH_JAW: 'CLENCH_JAW',
+  SWALLOW: "SWALLOW",
   PROTOCOL: 'PROTOCOL',
   PLAYBACK: 'PLAYBACK',
 } as const
@@ -22,10 +30,14 @@ export type MarkerKeyIntV1Type =
 
 export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
 	PROTOCOL: {
+		STARTED: 10020,
+		FINISHED: 10021,
+	},
+	BASELINE_EYES_OPEN: {
 		STARTED: 10000,
 		FINISHED: 10001,
 	},
-	BASELINE_EYES_OPEN: {
+	BASELINE_EYES_OPEN_NO_BLINKS: {
 		STARTED: 10002,
 		FINISHED: 10003,
 	},
@@ -33,9 +45,37 @@ export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
 		STARTED: 10004,
 		FINISHED: 10005,
 	},
+	BLINKS: {
+		STARTED: 10006,
+		FINISHED: 10007,
+	},
+	MOVE_EYES_LR: {
+		STARTED: 10008,
+		FINISHED: 10009,
+	},
+	MOVE_EYES_UD: {
+		STARTED: 10010,
+		FINISHED: 100011,
+	},	
+	MOVE_HEAD_LR: {
+		STARTED: 10012,
+		FINISHED: 10013,
+	},
+	MOVE_HEAD_UD: {
+		STARTED: 10014,
+		FINISHED: 100015,
+	},		
+	CLENCH_JAW: {
+		STARTED: 10016,
+		FINISHED: 10017,
+	},
+	SWALLOW: {
+		STARTED: 10018,
+		FINISHED: 100019,
+	},		
   PLAYBACK: {
-    RESUMED: 10006,
-    PAUSED: 10007,
+    RESUMED: 10022,
+    PAUSED: 100023,
   },
 	// Emotion markers (XXYYZ):
 	// Negative/Neutral category = 10, Positive/Curiosity category = 11
