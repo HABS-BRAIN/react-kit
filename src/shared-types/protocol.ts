@@ -86,6 +86,7 @@ type GoNextWhenMediaEnds = {
 
 export type GoNextSliders = {
   type: 'sliders'
+  instruction?: string
   sliders: {
     min?: number //default is 0
     max?: number //default is 100
