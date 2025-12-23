@@ -10,3 +10,6 @@ to test this package locally follow this steps:
 2. in auxasphere-react-kit project execute `npm run typescript:build`
 3. then in project you are using this lib run `rm -rf ./node_modules/auxasphere-react-kit/ && npm-sync --src /home/bogdan/TemmaCare/auxasphere-react-kit/ --dest /home/bogdan/TemmaCare/min-app-auxasphere-react-kits/ --yes` p.s. don't need to stop server to see changesL
 4. in project that use this package run `npm install auxasphere-react-kit`
+
+
+pnpm install git+ssh://git@github.com:HABS-BRAIN/react-kit.git#dev

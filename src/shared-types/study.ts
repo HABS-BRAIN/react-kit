@@ -19,9 +19,10 @@ export interface Study {
   _id: string
   title: string
   description?: string
-  protocols: Protocol['_id'][]
-  preForms?: Form['_id'][]
-  afterForms?: Form['_id'][]
+  sequence: {
+    type: 'protocol' | 'form',
+    _id: Protocol['_id']| Form['_id']
+  }[]
   belongsToOrganization: Organization['id'][]
   devicesConfig?: Partial<DevicesConfig> //future feature
   calibration?: Calibration //future feature
