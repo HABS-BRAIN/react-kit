@@ -20,6 +20,10 @@ export interface SequenceBlockCommonProps {
   description?: string
 }
 
+export interface StudyFullInfo extends Omit<Study, 'sequence'> {
+  sequence: (Protocol & { type: 'protocol' } | Form & { type: 'form' })[]
+}
+
 export interface Study {
   _id: string
   title: string
