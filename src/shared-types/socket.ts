@@ -57,7 +57,7 @@ export interface OperatorClientEvents {
   }: SelectedParticipantPayload) => void;
   getConnections: () => void;
   protocolSelected: (protocol: Protocol) => void;
-  studySelected: (studyId: string, participantId: string) => void;
+  studySelected: (payload: {studyId: string, participantId: string}) => void;
   playbackControl: (newPlaybackState: PlaybackState) => void;
   startFakeDeviceStream: () => void;
   stopFakeDeviceStream: () => void;
