@@ -1,4 +1,4 @@
-import { Study } from "./study"
+import { SequenceBlockCommonProps, Study } from "./study"
 
 export interface Option<T = string> {
   label: string
@@ -39,9 +39,6 @@ export type Field = {
 )
 
 
-export type Form = {
-  _id: string
-  title: string
-  description?: string
+export interface Form extends SequenceBlockCommonProps {
   fields: Record<string, Field>
 }

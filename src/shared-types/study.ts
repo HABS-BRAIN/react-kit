@@ -14,6 +14,11 @@ export enum StudiesOrderBy {
   CREATED_AT = 'createdAt',
 }
 
+export interface SequenceBlockCommonProps {
+  _id: string
+  title: string
+  description?: string
+}
 
 export interface Study {
   _id: string

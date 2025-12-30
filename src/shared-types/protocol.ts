@@ -3,15 +3,13 @@ import { ProtocolMedia } from './media'
 import { CSSProperties } from 'react'
 import { KeycloakUser } from './user'
 import { StepMeta } from './step-meta'
+import { SequenceBlockCommonProps } from './study'
 
 export const DEFAULT_STEP_CONTENT_STYLE: CSSProperties = {
   backgroundColor: '#000000',
   color: '#FFFFFF',
 }
-export interface Protocol {
-  _id: string
-  title: string
-  description?: string
+export interface Protocol extends SequenceBlockCommonProps {
   template?: boolean //if some step content type is personalized, then template is true )
   templateId?: string //id of the protocol which was used as template
   belongsToParticipant?: string //if protocol is personalized for participant, then this field is set
