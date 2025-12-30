@@ -40,5 +40,5 @@ export type Field = {
 
 
 export interface Form extends SequenceBlockCommonProps {
-  fields: Record<string, Field>
+  fields: Field[]
 }
