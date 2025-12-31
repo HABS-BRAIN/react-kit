@@ -2,6 +2,7 @@ import { Socket as IOSocket } from 'socket.io';
 import { KeycloakUser } from './user';
 import { Organization } from './organization';
 import { Protocol, Step, GoNextSliders, GoNextCheckbox } from './protocol';
+import { StudyFullInfo } from './study';
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser;
@@ -57,7 +58,7 @@ export interface OperatorClientEvents {
   }: SelectedParticipantPayload) => void;
   getConnections: () => void;
   protocolSelected: (protocol: Protocol) => void;
-  studySelected: (payload: {studyId: string, participantId: string}) => void;
+  studySelected: (study: StudyFullInfo) => void;
   playbackControl: (newPlaybackState: PlaybackState) => void;
   startFakeDeviceStream: () => void;
   stopFakeDeviceStream: () => void;
