@@ -72,7 +72,7 @@ export interface OperatorServerEvents extends CommonServerEvents {
 }
 
 export interface ProtocolPlayerClientEvents {
-  participantLaunchProtocol: () => void;
+  participantLaunchStudy: (position: {block: number, step: number}) => void;
   audioStarted: (data: any) => void;
   audioEnded: (data: any) => void;
   videoStarted: (data: any) => void;
@@ -83,7 +83,7 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   PLAY_STEP_ENDS_SOUND: () => void;
   PLAY_STEP_STARTS_SOUND: () => void;
   PARTICIPANT_SELECTED: (data: SelectedParticipantPayload) => void;
-  PROTOCOL_SELECTED_BY_OPERATOR: (protocol: Protocol) => void;
+  STUDY_SELECTED_BY_OPERATOR: (studyFullInfo: StudyFullInfo) => void;
   PRESENT_REPLY_FORM: () => void
   USER_INTERACTION_COMPLETED: (index: number) => void
 }
