@@ -1,13 +1,14 @@
-import { DevicesConfig } from "./device-config"
-import { Form } from "./form"
-import { Protocol } from "./protocol"
-import { Organization } from "./organization"
+import { DevicesConfig } from './device-config'
+import { Form } from './form'
+import { Protocol } from './protocol'
+import { Organization } from './organization'
 
 interface Calibration {
   recordCalibration: boolean
   audio?: ('output' | 'volume' | 'maxHearingHZ')[]
 }
 
+export type CurrentPosition = { block: number; step: number }
 
 export enum StudiesOrderBy {
   TITLE = 'title',
@@ -21,7 +22,7 @@ export interface SequenceBlockCommonProps {
 }
 
 export interface StudyFullInfo extends Omit<Study, 'sequence'> {
-  sequence: (Protocol & { type: 'protocol' } | Form & { type: 'form' })[]
+  sequence: ((Protocol & { type: 'protocol' }) | (Form & { type: 'form' }))[]
 }
 
 export interface Study {
@@ -29,8 +30,8 @@ export interface Study {
   title: string
   description?: string
   sequence: {
-    type: 'protocol' | 'form',
-    _id: Protocol['_id']| Form['_id']
+    type: 'protocol' | 'form'
+    _id: Protocol['_id'] | Form['_id']
   }[]
   belongsToOrganization: Organization['id'][]
   devicesConfig?: Partial<DevicesConfig> //future feature
