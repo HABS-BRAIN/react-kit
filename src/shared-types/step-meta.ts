@@ -14,7 +14,7 @@ export const LSLMarkerKey = {
   MOVE_HEAD_UD: 'MOVE_HEAD_UD',
   CLENCH_JAW: 'CLENCH_JAW',
   SWALLOW: "SWALLOW",
-  PROTOCOL: 'PROTOCOL',
+  STUDY_BLOCK: 'STUDY_BLOCK',
   PLAYBACK: 'PLAYBACK',
 } as const
 
@@ -29,7 +29,7 @@ export type MarkerKeyIntV1Type =
   Record<MarkerKeyWithStart, StartFinishMarker> & { PLAYBACK: PlaybackMarker }
 
 export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
-	PROTOCOL: {
+	STUDY_BLOCK: {
 		STARTED: 10020,
 		FINISHED: 10021,
 	},
