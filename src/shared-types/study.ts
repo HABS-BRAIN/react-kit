@@ -22,7 +22,10 @@ export interface SequenceBlockCommonProps {
 }
 
 export interface StudyFullInfo extends Omit<Study, 'sequence'> {
-  sequence: ((Protocol & { type: 'protocol' }) | (Form & { type: 'form' }))[]
+  sequence: (
+    | ({ protocol: Protocol } & { type: 'protocol' })
+    | ({ form: Form } & { type: 'form' })
+  )[]
 }
 
 export interface Study {
