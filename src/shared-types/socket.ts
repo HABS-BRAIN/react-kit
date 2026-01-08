@@ -2,7 +2,7 @@ import { Socket as IOSocket } from 'socket.io';
 import { KeycloakUser } from './user';
 import { Organization } from './organization';
 import { Protocol, Step, GoNextSliders, GoNextCheckbox } from './protocol';
-import { StudyFullInfo } from './study';
+import { CurrentPosition, StudyFullInfo } from './study';
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser;
@@ -72,7 +72,7 @@ export interface OperatorServerEvents extends CommonServerEvents {
 }
 
 export interface ProtocolPlayerClientEvents {
-  participantLaunchStudy: (position: {block: number, step: number}) => void;
+  participantLaunchStudy: (position: CurrentPosition) => void;
   audioStarted: (data: any) => void;
   audioEnded: (data: any) => void;
   videoStarted: (data: any) => void;
