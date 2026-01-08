@@ -8,7 +8,7 @@ interface Calibration {
   audio?: ('output' | 'volume' | 'maxHearingHZ')[]
 }
 
-export type CurrentPosition = { block: number; step: number }
+export type CurrentPosition = { blockIndex: number; stepIndex: number }
 
 export enum StudiesOrderBy {
   TITLE = 'title',
