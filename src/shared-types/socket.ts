@@ -42,9 +42,20 @@ export type NamespaceClientEventsMap = {
   '/remote-participant-control': RemoteParticipantClientEvents
 }
 
+type NewStepPayload =
+  | {
+      step: Step
+      position: CurrentPosition
+      type: 'protocol'
+    }
+  | {
+      step: Field
+      position: CurrentPosition
+      type: 'form'
+    }
 interface CommonServerEvents {
   PLAYBACK_STATE_CHANGED: (playbackState: PlaybackState) => void
-  NEW_STEP: (newStep: { step: Step | Field; position: CurrentPosition; type: 'protocol'|'form' }) => void
+  NEW_STEP: (newStep: NewStepPayload) => void
 }
 
 export interface OperatorClientEvents {
