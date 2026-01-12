@@ -3,6 +3,7 @@ import { KeycloakUser } from './user';
 import { Organization } from './organization';
 import { Protocol, Step, GoNextSliders, GoNextCheckbox } from './protocol';
 import { CurrentPosition, StudyFullInfo } from './study';
+import { Field } from './form';
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser;
@@ -49,6 +50,7 @@ export type NamespaceClientEventsMap = {
 interface CommonServerEvents {
   PLAYBACK_STATE_CHANGED: (playbackState: PlaybackState) => void;
   NEW_STEP: (newStep: { step: Step; position: CurrentPosition}) => void
+  NEW_FIELD: (newField: { field: Field; position: CurrentPosition}) => void
 }
 
 export interface OperatorClientEvents {
