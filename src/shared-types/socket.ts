@@ -42,7 +42,7 @@ export type NamespaceClientEventsMap = {
   '/remote-participant-control': RemoteParticipantClientEvents
 }
 
-type NewStepPayload =
+export type NewStepPayload =
   | {
       step: Step
       position: CurrentPosition
