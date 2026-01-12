@@ -44,7 +44,7 @@ export type NamespaceClientEventsMap = {
 
 interface CommonServerEvents {
   PLAYBACK_STATE_CHANGED: (playbackState: PlaybackState) => void
-  NEW_STEP: (newStep: { step: Step | Field; position: CurrentPosition; kind: 'step'|'field' }) => void
+  NEW_STEP: (newStep: { step: Step | Field; position: CurrentPosition; type: 'protocol'|'form' }) => void
 }
 
 export interface OperatorClientEvents {
