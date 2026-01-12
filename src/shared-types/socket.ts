@@ -96,6 +96,7 @@ export interface RemoteParticipantClientEvents extends InteractionCompletedEvent
   confirmParticipantIdentity: (data: SelectedParticipantPayload) => void;
   sliderInputValueChange: (data: any) => void;
   sliderInputValueChangeComplete: (data: any) => void;
+  formValueSubmitted: (data: any) => void;
   // participantLaunchProtocol: (data: any) => void; //I removed this button from tablet. Protocol should be started by operator from the protocol player browser. Otherwise video/audio will not be playing as this window stays untouched
 }
 
