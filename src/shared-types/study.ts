@@ -18,7 +18,6 @@ export enum StudiesOrderBy {
 export interface SequenceBlockCommonProps {
   _id: string
   title: string
-  runNextBlockAfterEachStep?: boolean
   description?: string
 }
 
@@ -36,6 +35,7 @@ export interface Study {
   sequence: {
     type: 'protocol' | 'form'
     _id: Protocol['_id'] | Form['_id']
+    runNextBlockAfterEachStep?: boolean
   }[]
   belongsToOrganization: Organization['id'][]
   devicesConfig?: Partial<DevicesConfig> //future feature
