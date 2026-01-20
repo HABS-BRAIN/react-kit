@@ -18,7 +18,7 @@ export enum StudiesOrderBy {
 export interface SequenceBlockCommonProps {
   _id: string
   title: string
-  cycledForPrevious?: boolean
+  runNextBlockAfterEachStep?: boolean
   description?: string
 }
 
