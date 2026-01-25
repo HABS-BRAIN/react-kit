@@ -23,8 +23,16 @@ export interface SequenceBlockCommonProps {
 
 export interface StudyFullInfo extends Omit<Study, 'sequence'> {
   sequence: (
-    | ({ protocol: Protocol } & { type: 'protocol', runNextBlockAfterEachStep?: boolean})
-    | ({ form: Form } & { type: 'form', runNextBlockAfterEachStep?: boolean })
+    | ({ protocol: Protocol } & {
+        type: 'protocol'
+        runNextBlockAfterEachStep?: boolean
+        mixSteps?: boolean
+      })
+    | ({ form: Form } & {
+        type: 'form'
+        runNextBlockAfterEachStep?: boolean
+        mixSteps?: boolean
+      })
   )[]
 }
 
@@ -36,6 +44,7 @@ export interface Study {
     type: 'protocol' | 'form'
     _id: Protocol['_id'] | Form['_id']
     runNextBlockAfterEachStep?: boolean
+    mixSteps?: boolean
   }[]
   belongsToOrganization: Organization['id'][]
   devicesConfig?: Partial<DevicesConfig> //future feature
