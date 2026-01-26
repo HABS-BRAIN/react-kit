@@ -1,6 +1,6 @@
 import { MAIN_EMOTION } from './emotions'
 
-export type StepMeta = { lslMarkerKey?: MarkerKeyWithStart } & Record<string, any>
+export type StepMeta = { lslMarkerKey?: MarkerKeyWithStart, customMarker?: number }
 
 export const LSLMarkerKey = {
   ...MAIN_EMOTION,
