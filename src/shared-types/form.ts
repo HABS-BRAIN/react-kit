@@ -8,46 +8,47 @@ export interface Option<T = string> {
   value: T
 }
 
-// export type Field = {
-//   label?: string
-//   required?: boolean
-//   requiredMessage?: string
-// } & (
-//   | {
-//       type: 'slider'
-//       config: SliderSingleProps
-//     }
-//   | {
-//       type: 'textarea' | 'text'
-//       config: InputProps
-//     }
-//   | {
-//       type: 'number'
-//       config: InputNumberProps
-//     }
-//   | {
-//       type: 'radio'
-//     }
-//   | {
-//       type: 'checkbox'
-//       config: CheckboxGroupProps
-//     }
-//   | {
-//       type: 'select'
-//       config: SelectProps
-//     }
-// )
-
-export interface Field {
+export type Field = {
   label?: string
-  type: 'slider' | 'textarea' | 'text' | 'number' | 'radio' | 'select' | 'checkbox'
-  config:
-    | SliderSingleProps
-    | InputProps
-    | InputNumberProps
-    | CheckboxGroupProps
-    | SelectProps
-}
+  required?: boolean
+  requiredMessage?: string
+} & (
+  | {
+      type: 'slider'
+      config: SliderSingleProps
+    }
+  | {
+      type: 'textarea' | 'text'
+      config: InputProps
+    }
+  | {
+      type: 'number'
+      config: InputNumberProps
+    }
+  | {
+      type: 'radio'
+      config: CheckboxGroupProps
+    }
+  | {
+      type: 'checkbox'
+      config: CheckboxGroupProps
+    }
+  | {
+      type: 'select'
+      config: SelectProps
+    }
+)
+
+// export interface Field {
+//   label?: string
+//   type: 'slider' | 'textarea' | 'text' | 'number' | 'radio' | 'select' | 'checkbox'
+//   config:
+//     | SliderSingleProps
+//     | InputProps
+//     | InputNumberProps
+//     | CheckboxGroupProps
+//     | SelectProps
+// }
 
 export interface Form extends SequenceBlockCommonProps {
   fields: Field[]
