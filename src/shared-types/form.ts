@@ -1,4 +1,7 @@
-import { SequenceBlockCommonProps, Study } from "./study"
+import { InputNumberProps, InputProps, SelectProps } from 'antd'
+import { CheckboxGroupProps } from 'antd/es/checkbox/Group'
+import { SliderSingleProps } from 'antd/es/slider'
+import { SequenceBlockCommonProps, Study } from './study'
 
 export interface Option<T = string> {
   label: string
@@ -12,32 +15,28 @@ export type Field = {
 } & (
   | {
       type: 'slider'
-      initialValue?: number //NaN
-      evaluate?: {
-        left: string
-        right: string
-      }
-      placeholder?: string
+      config: SliderSingleProps
     }
   | {
-      type: 'textarea' | 'text' | 'number' | 'email'
-      placeholder?: string
-      initialValue?: string
+      type: 'textarea' | 'text' | 'number'
+      config: InputProps
+    }
+  | {
+      type: 'number'
+      config: InputNumberProps
     }
   | {
       type: 'radio'
-      options: Option[]
-      placeholder?: string
-      initialValue?: string
+    }
+  | {
+      type: 'checkbox'
+      config: CheckboxGroupProps
     }
   | {
       type: 'select'
-      options: Option[]
-      placeholder?: string
-      initialValue?: string[]
+      config: SelectProps
     }
 )
-
 
 export interface Form extends SequenceBlockCommonProps {
   fields: Field[]
