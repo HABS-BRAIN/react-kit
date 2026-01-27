@@ -1,7 +1,8 @@
-import { InputNumberProps, InputProps, SelectProps } from 'antd'
+import { InputNumberProps, InputProps, RadioGroupProps, SelectProps } from 'antd'
 import { CheckboxGroupProps } from 'antd/es/checkbox/Group'
 import { SliderSingleProps } from 'antd/es/slider'
 import { SequenceBlockCommonProps, Study } from './study'
+import { TextAreaProps } from 'antd/es/input'
 
 export interface Option<T = string> {
   label: string
@@ -18,8 +19,12 @@ export type Field = {
       config: SliderSingleProps
     }
   | {
-      type: 'textarea' | 'text'
+      type: 'text'
       config: InputProps
+    }
+  | {
+      type: 'textarea' 
+      config: TextAreaProps
     }
   | {
       type: 'number'
@@ -27,7 +32,7 @@ export type Field = {
     }
   | {
       type: 'radio'
-      config: CheckboxGroupProps
+      config: RadioGroupProps
     }
   | {
       type: 'checkbox'
@@ -42,12 +47,7 @@ export type Field = {
 // export interface Field {
 //   label?: string
 //   type: 'slider' | 'textarea' | 'text' | 'number' | 'radio' | 'select' | 'checkbox'
-//   config:
-//     | SliderSingleProps
-//     | InputProps
-//     | InputNumberProps
-//     | CheckboxGroupProps
-//     | SelectProps
+//   config:SliderSingleProps | InputNumberProps | InputProps | CheckboxGroupProps | RadioGroupProps | SelectProps | TextAreaProps 
 // }
 
 export interface Form extends SequenceBlockCommonProps {
