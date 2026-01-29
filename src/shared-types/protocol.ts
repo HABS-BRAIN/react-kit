@@ -91,6 +91,7 @@ export type GoNextSliders = {
   type: 'sliders'
   instruction?: string
   sliders: {
+    instruction?: string
     min?: number //default is 0
     max?: number //default is 100
     defaultValue?: number //default is 50
