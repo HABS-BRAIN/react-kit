@@ -7,6 +7,7 @@ import { useStateCallback } from './useStateCallback'
 import { useDev } from './useDev'
 import { useStrongPassword } from './useStrongPassword'
 import { generateUniqueColor } from './generateUniqueColor'
+import { getFilename } from './getFilename'
 
 export {
   useAttemptListener,
@@ -18,6 +19,7 @@ export {
   useStateWithDebounce,
   useStateWithPrevious,
   generateUniqueColor,
+  getFilename,
 }
 
 export * from './shared-types/device-config';
