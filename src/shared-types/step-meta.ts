@@ -1,6 +1,10 @@
 import { MAIN_EMOTION } from './emotions'
 
-export type StepMeta = { lslMarkerKey?: MarkerKeyWithStart, customStartMarker?: number, customFinishMarker?: number }
+export type StepMeta = {
+  lslMarkerKey?: MarkerKeyWithStart
+  customStartMarker?: number
+  customFinishMarker?: number
+}
 
 export const LSLMarkerKey = {
   ...MAIN_EMOTION,
@@ -14,16 +18,15 @@ export const LSLMarkerKey = {
   MOVE_HEAD_UD: 'MOVE_HEAD_UD',
   CLENCH_JAW: 'CLENCH_JAW',
   SWALLOW: 'SWALLOW',
-  STUDY_BLOCK: 'STUDY_BLOCK',
-  BLOCK_STEP: 'BLOCK_STEP',
   PLAYBACK: 'PLAYBACK',
+  MOVE_ARMS: 'MOVE_ARMS',
 } as const
 
 export type LSLMarkerKey = (typeof LSLMarkerKey)[keyof typeof LSLMarkerKey]
 
 export type MarkerKeyWithStart = Exclude<LSLMarkerKey, 'PLAYBACK'>
 
-type StartFinishMarker = { STARTED: number; FINISHED: number }
+type StartFinishMarker = { STARTED: number; FINISHED: number } & { dynamic?: boolean }
 type PlaybackMarker = { RESUMED: number; PAUSED: number }
 
 export type MarkerKeyIntV1Type = Record<MarkerKeyWithStart, StartFinishMarker> & {
@@ -71,66 +74,74 @@ export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
     STARTED: 10018,
     FINISHED: 100019,
   },
-  STUDY_BLOCK: {
+  MOVE_ARMS: {
     STARTED: 10020,
     FINISHED: 10021,
   },
   PLAYBACK: {
-	RESUMED: 10022,
-	PAUSED: 100023,
-  },
-  BLOCK_STEP: {
-    STARTED: 10024,
-    FINISHED: 10025,
+    RESUMED: 10051,
+    PAUSED: 10052,
   },
   // Emotion markers (XXYYZ):
   // Negative/Neutral category = 10, Positive/Curiosity category = 11
   // Z: even = STARTED (0), odd = FINISHED (1)
   ANGER: {
+    dynamic: true,
     STARTED: 10100,
     FINISHED: 10101,
   },
   FEAR: {
+    dynamic: true,
     STARTED: 10200,
     FINISHED: 10201,
   },
   DISGUST: {
+    dynamic: true,
     STARTED: 10300,
     FINISHED: 10301,
   },
   SADNESS: {
+    dynamic: true,
     STARTED: 10400,
     FINISHED: 10401,
   },
   JOY: {
-    STARTED: 11050,
-    FINISHED: 11051,
+    dynamic: true,
+    STARTED: 10500,
+    FINISHED: 10501,
   },
   SURPRISE: {
-    STARTED: 11060,
-    FINISHED: 11061,
+    dynamic: true,
+    STARTED: 10600,
+    FINISHED: 10061,
   },
   EXCITEMENT: {
-    STARTED: 11070,
-    FINISHED: 11071,
+    dynamic: true,
+    STARTED: 10700,
+    FINISHED: 10701,
   },
   RELAXATION: {
-    STARTED: 11080,
-    FINISHED: 11081,
+    dynamic: true,
+    STARTED: 10800,
+    FINISHED: 10801,
   },
   GUILT: {
+    dynamic: true,
     STARTED: 10900,
     FINISHED: 10901,
   },
   SENSUALITY: {
+    dynamic: true,
+    STARTED: 11000,
+    FINISHED: 11001,
+  },
+  CURIOSITY: {
+    dynamic: true,
     STARTED: 11100,
     FINISHED: 11101,
   },
-  CURIOSITY: {
-    STARTED: 11110,
-    FINISHED: 11111,
-  },
   NEUTRAL: {
+    dynamic: true,
     STARTED: 11200,
     FINISHED: 11201,
   },
