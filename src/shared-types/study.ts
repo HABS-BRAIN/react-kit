@@ -25,12 +25,12 @@ export interface StudyFullInfo extends Omit<Study, 'sequence'> {
   sequence: (
     | ({ protocol: Protocol } & {
         type: 'protocol'
-        runNextBlockAfterEachStep?: boolean
+        runNextBlockAfterEachStep?: number
         mixSteps?: boolean
       })
     | ({ form: Form } & {
         type: 'form'
-        runNextBlockAfterEachStep?: boolean
+        runNextBlockAfterEachStep?: number
         mixSteps?: boolean
       })
   )[]
@@ -43,7 +43,7 @@ export interface Study {
   sequence: {
     type: 'protocol' | 'form'
     _id: Protocol['_id'] | Form['_id']
-    runNextBlockAfterEachStep?: boolean
+    runNextBlockAfterEachStep?: number
     mixSteps?: boolean
   }[]
   belongsToOrganization: Organization['id'][]
