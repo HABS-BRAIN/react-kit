@@ -56,7 +56,7 @@ export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
   },
   MOVE_EYES_UD: {
     STARTED: 10010,
-    FINISHED: 100011,
+    FINISHED: 10011,
   },
   MOVE_HEAD_LR: {
     STARTED: 10012,
@@ -64,7 +64,7 @@ export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
   },
   MOVE_HEAD_UD: {
     STARTED: 10014,
-    FINISHED: 100015,
+    FINISHED: 10015,
   },
   CLENCH_JAW: {
     STARTED: 10016,
@@ -72,7 +72,7 @@ export const MarkerKeyIntV1: MarkerKeyIntV1Type = {
   },
   SWALLOW: {
     STARTED: 10018,
-    FINISHED: 100019,
+    FINISHED: 10019,
   },
   MOVE_ARMS: {
     STARTED: 10020,
