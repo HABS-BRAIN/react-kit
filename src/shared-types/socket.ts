@@ -16,6 +16,14 @@ export type PrefetchedMediaInfoPayload = {
   totalSteps: number
 }
 
+export type EventSubscription =
+  | { namespace: '/protocol-player'; event: keyof ProtocolPlayerClientEvents }
+  | { namespace: '/operator'; event: keyof OperatorClientEvents }
+  | {
+      namespace: '/remote-participant-control'
+      event: keyof RemoteParticipantClientEvents
+    }
+
 export type PlaybackState = 'playing' | 'paused' | 'finished' | 'ready'
 
 export type EventPayload<T> = T extends (...args: infer P) => void ? P[0] : never
