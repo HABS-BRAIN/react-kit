@@ -69,7 +69,6 @@ interface CommonServerEvents {
 export interface OperatorClientEvents {
   participantSelected: ({ participant, organization }: SelectedParticipantPayload) => void
   getConnections: () => void
-  protocolSelected: (protocol: Protocol) => void
   studySelected: (study: StudyFullInfo) => void
   playbackControl: (newPlaybackState: PlaybackState) => void
   startFakeDeviceStream: () => void
