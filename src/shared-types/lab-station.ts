@@ -13,12 +13,7 @@ export interface ConnectedLabStation {
   }
   currentPosition?: CurrentPosition
   study?: StudyFullInfo
-  operatorId?: string
+  operator?: KeycloakUser
   participant?: KeycloakUser
   organization?: Organization
-}
-
-export interface ConnectedLabStationFullInfo extends ConnectedLabStation {
-  study: StudyFullInfo
-  operator: KeycloakUser
 }
