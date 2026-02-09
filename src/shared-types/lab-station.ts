@@ -17,3 +17,8 @@ export interface ConnectedLabStation {
   participant?: KeycloakUser
   organization?: Organization
 }
+
+export interface ConnectedLabStationFullInfo extends ConnectedLabStation {
+  study: StudyFullInfo
+  operator: KeycloakUser
+}
