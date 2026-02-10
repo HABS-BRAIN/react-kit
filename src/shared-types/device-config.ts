@@ -1,3 +1,4 @@
+//currently unused
 /**
  * This enum should exactly match with IXNMuseDataPacketType.h of SDK
  */
@@ -112,8 +113,3 @@ export const MusePresetOptions = Object.entries(MusePreset)
     label: key,
     value: value as number,
   }))
-
-export interface DevicesConfig {
-  muse: MuseConfig
-  openBCI: any // Just for example
-}

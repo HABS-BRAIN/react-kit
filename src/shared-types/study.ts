@@ -1,11 +1,10 @@
-import { DevicesConfig } from './device-config'
 import { Form } from './form'
 import { Protocol } from './protocol'
 import { Organization } from './organization'
+import { MAIN_EMOTION, EMOTION_CATEGORIES } from './emotions'
 
-interface Calibration {
-  recordCalibration: boolean
-  audio?: ('output' | 'volume' | 'maxHearingHZ')[]
+export interface Calibration {
+  emotinder: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]> 
 }
 
 export type CurrentPosition = { blockIndex: number; stepIndex: number }
@@ -47,8 +46,6 @@ export interface Study {
     mixSteps?: boolean
   }[]
   belongsToOrganization: Organization['id'][]
-  devicesConfig?: Partial<DevicesConfig> //future feature
-  calibration?: Calibration //future feature
 }
 
 // export interface StudyFullInfo extends Omit<Study, 'belongsToOrganization' | 'protocols' | 'preForms' | 'afterForms'> {
