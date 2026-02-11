@@ -15,10 +15,10 @@ export enum StudiesOrderBy {
 }
 
 export interface SequenceBlockCommonProps {
-  _id?: string
-  templateId?: string
+  _id: string | null
   title: string
   description?: string
+  templateId?: string
 }
 
 export interface StudyFullInfo extends Omit<Study, 'sequence'> {
