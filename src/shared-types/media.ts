@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose"
 import { EMOTION_SUBCATEGORIES } from "./emotions"
 
 export interface Media extends ProtocolMedia {
@@ -9,7 +10,7 @@ export interface Media extends ProtocolMedia {
 }
 
 export interface ProtocolMedia {
-  _id: string
+  _id: ObjectId
   filename: string
   originalName: string
   duration?: number // For audio and video files (in seconds)

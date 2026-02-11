@@ -2,6 +2,7 @@ import { Form } from './form'
 import { Protocol } from './protocol'
 import { Organization } from './organization'
 import { MAIN_EMOTION, EMOTION_CATEGORIES } from './emotions'
+import { ObjectId } from 'mongoose'
 
 export interface Calibration {
   emotinder: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]> 
@@ -15,7 +16,7 @@ export enum StudiesOrderBy {
 }
 
 export interface SequenceBlockCommonProps {
-  _id: string
+  _id: ObjectId
   title: string
   description?: string
   templateId?: string
@@ -39,7 +40,7 @@ export interface StudyFullInfo extends Omit<Study, 'sequence'> {
 }
 
 export interface Study {
-  _id: string
+  _id: ObjectId
   title: string
   description?: string
   sequence: {
