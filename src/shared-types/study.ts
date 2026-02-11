@@ -26,11 +26,13 @@ export interface StudyFullInfo extends Omit<Study, 'sequence'> {
         type: 'protocol'
         runNextBlockAfterEachStep?: number
         mixSteps?: boolean
+        templateId: string
       })
     | ({ form: Form } & {
         type: 'form'
         runNextBlockAfterEachStep?: number
         mixSteps?: boolean
+        templateId: string
       })
   )[]
 }
