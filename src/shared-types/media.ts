@@ -10,7 +10,7 @@ export interface Media extends ProtocolMedia {
 }
 
 export interface ProtocolMedia {
-  _id: ObjectId
+  _id: ObjectId | string
   filename: string
   originalName: string
   duration?: number // For audio and video files (in seconds)
