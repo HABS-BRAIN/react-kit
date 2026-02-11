@@ -15,7 +15,7 @@ export enum StudiesOrderBy {
 }
 
 export interface SequenceBlockCommonProps {
-  _id: string | null
+  _id: string
   title: string
   description?: string
   templateId?: string
