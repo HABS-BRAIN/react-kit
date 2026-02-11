@@ -1,11 +1,10 @@
+import { EMOTION_CATEGORIES, MAIN_EMOTION } from './emotions'
 import { Form } from './form'
-import { Protocol } from './protocol'
 import { Organization } from './organization'
-import { MAIN_EMOTION, EMOTION_CATEGORIES } from './emotions'
-import { ObjectId } from 'mongoose'
+import { Protocol } from './protocol'
 
 export interface Calibration {
-  emotinder: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]> 
+  emotinder: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
 }
 
 export type CurrentPosition = { blockIndex: number; stepIndex: number }
@@ -16,7 +15,7 @@ export enum StudiesOrderBy {
 }
 
 export interface SequenceBlockCommonProps {
-  _id: ObjectId | string
+  _id: string
   title: string
   description?: string
   templateId?: string
@@ -40,7 +39,7 @@ export interface StudyFullInfo extends Omit<Study, 'sequence'> {
 }
 
 export interface Study {
-  _id: ObjectId | string
+  _id: string
   title: string
   description?: string
   sequence: {
