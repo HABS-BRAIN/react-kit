@@ -18,6 +18,7 @@ export interface SequenceBlockCommonProps {
   _id: string
   title: string
   description?: string
+  templateId?: string
 }
 
 export interface StudyFullInfo extends Omit<Study, 'sequence'> {
