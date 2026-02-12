@@ -41,6 +41,7 @@ export interface StudyFullInfo extends Omit<Study, 'sequence'> {
 export interface Study {
   _id: string
   title: string
+  children?: Study['_id'][]
   description?: string
   sequence: {
     type: 'protocol' | 'form'
