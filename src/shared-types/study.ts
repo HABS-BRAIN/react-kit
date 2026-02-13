@@ -1,10 +1,10 @@
 import { EMOTION_CATEGORIES, MAIN_EMOTION } from './emotions'
 import { Form } from './form'
 import { Organization } from './organization'
-import { Protocol } from './protocol'
+import { Protocol, ProtocolTemplate } from './protocol'
 
 export interface Calibration {
-  emotinder: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
+  [ProtocolTemplate.EMOTINDER]: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
 }
 
 export type CurrentPosition = { blockIndex: number; stepIndex: number }
