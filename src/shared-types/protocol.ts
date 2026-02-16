@@ -16,7 +16,6 @@ export const DEFAULT_STEP_CONTENT_STYLE: CSSProperties = {
 }
 export interface Protocol extends SequenceBlockCommonProps {
   template?: ProtocolTemplate
-  belongsToParticipant?: string //if protocol is personalized for participant, then this field is set
   participant?: KeycloakUser
   estimatedDuration: {
     total: number
