@@ -72,7 +72,7 @@ interface CommonClientEvents {
 
 export interface OperatorClientEvents extends CommonClientEvents {
   participantSelected: ({ participant, organization }: SelectedParticipantPayload) => void
-  studySelected: (study: StudyFullInfo & {currentPosition: CurrentPosition}) => void
+  studySelected: ({study, currentPosition}: {study: StudyFullInfo, currentPosition: CurrentPosition}) => void
   playbackControl: (newPlaybackState: PlaybackState) => void
   startFakeDeviceStream: () => void
   stopFakeDeviceStream: () => void
@@ -97,7 +97,7 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   PLAY_STEP_ENDS_SOUND: () => void
   PLAY_STEP_STARTS_SOUND: () => void
   PARTICIPANT_SELECTED: (data: SelectedParticipantPayload) => void
-  STUDY_SELECTED_BY_OPERATOR: (studyFullInfo: StudyFullInfo & {currentPosition: CurrentPosition}) => void
+  STUDY_SELECTED_BY_OPERATOR: ({study, currentPosition}: {study: StudyFullInfo, currentPosition: CurrentPosition}) => void
   PRESENT_REPLY_FORM: () => void
   USER_INTERACTION_COMPLETED: (index: number) => void
 }
