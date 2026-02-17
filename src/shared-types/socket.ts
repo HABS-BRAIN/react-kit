@@ -67,7 +67,7 @@ interface CommonServerEvents {
   NEW_STEP: (newStep: NewStepPayload) => void
 }
 interface CommonClientEvents {
-  getSessionState: () => Omit<ConnectedLabStation,'socketId'>
+  getSessionState: (callback: (sessionState: Omit<ConnectedLabStation,'socketId'>) => void) => void
 }
 
 export interface OperatorClientEvents extends CommonClientEvents {
