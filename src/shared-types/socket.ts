@@ -1,9 +1,10 @@
 import { Socket as IOSocket } from 'socket.io'
-import { KeycloakUser } from './user'
-import { Organization } from './organization'
-import { Protocol, Step, GoNextSliders, GoNextCheckbox } from './protocol'
-import { CurrentPosition, StudyFullInfo } from './study'
 import { Field } from './form'
+import { ConnectedLabStation } from './lab-station'
+import { Organization } from './organization'
+import { GoNextCheckbox, GoNextSliders, Step } from './protocol'
+import { CurrentPosition, StudyFullInfo } from './study'
+import { KeycloakUser } from './user'
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser
@@ -65,10 +66,12 @@ interface CommonServerEvents {
   PLAYBACK_STATE_CHANGED: (playbackState: PlaybackState) => void
   NEW_STEP: (newStep: NewStepPayload) => void
 }
+interface CommonClientEvents {
+  getSessionState: () => Omit<ConnectedLabStation,'socketId'>
+}
 
-export interface OperatorClientEvents {
+export interface OperatorClientEvents extends CommonClientEvents {
   participantSelected: ({ participant, organization }: SelectedParticipantPayload) => void
-  getConnections: () => void
   studySelected: (study: StudyFullInfo & {currentPosition: CurrentPosition}) => void
   playbackControl: (newPlaybackState: PlaybackState) => void
   startFakeDeviceStream: () => void
@@ -82,7 +85,7 @@ export interface OperatorServerEvents extends CommonServerEvents {
   GET_SESSION_STATE: () => void
 }
 
-export interface ProtocolPlayerClientEvents {
+export interface ProtocolPlayerClientEvents extends CommonClientEvents {
   participantLaunchStudy: (position: CurrentPosition) => void
   audioStarted: (data: any) => void
   audioEnded: (data: any) => void
@@ -101,7 +104,7 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
 
 export type RemoteParticipantServerEvents = ProtocolPlayerServerEvents
 
-export interface RemoteParticipantClientEvents extends InteractionCompletedEvents {
+export interface RemoteParticipantClientEvents extends InteractionCompletedEvents, CommonClientEvents {
   confirmParticipantIdentity: (data: SelectedParticipantPayload) => void
   sliderInputValueChange: (data: any) => void
   sliderInputValueChangeComplete: (data: any) => void
