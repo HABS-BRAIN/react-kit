@@ -1,4 +1,5 @@
 import { Organization } from './organization'
+import { PlaybackState } from './socket'
 import { CurrentPosition, StudyFullInfo } from './study'
 import { KeycloakUser } from './user'
 
@@ -16,4 +17,5 @@ export interface ConnectedLabStation {
   operator?: KeycloakUser
   participant?: KeycloakUser
   organization?: Organization
+  playbackState?: PlaybackState
 }
