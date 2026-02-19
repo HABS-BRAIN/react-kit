@@ -76,7 +76,7 @@ export interface OperatorClientEvents extends CommonClientEvents {
   playbackControl: (newPlaybackState: PlaybackState) => void
   startFakeDeviceStream: () => void
   stopFakeDeviceStream: () => void
-  sync: () => void
+  dev: () => void
 }
 
 export interface OperatorServerEvents extends CommonServerEvents {
