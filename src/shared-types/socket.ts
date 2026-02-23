@@ -95,6 +95,15 @@ export interface OperatorServerEvents extends CommonServerEvents {
   PARTICIPANT_CONFIRMED_IDENTITY: (data: SelectedParticipantPayload) => void
   STEP_MEDIA_PREFETCHED: (info: PrefetchedMediaInfoPayload) => void
   GET_SESSION_STATE: () => void
+  DISPLAY_PARTICIPANT_RESPONSE: ({
+    step,
+    position,
+    value,
+  }: {
+    step: Field | Step
+    position: CurrentPosition
+    value: any
+  }) => void
 }
 
 export interface ProtocolPlayerClientEvents extends CommonClientEvents {
