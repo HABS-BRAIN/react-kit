@@ -96,11 +96,9 @@ export interface OperatorServerEvents extends CommonServerEvents {
   STEP_MEDIA_PREFETCHED: (info: PrefetchedMediaInfoPayload) => void
   GET_SESSION_STATE: () => void
   DISPLAY_PARTICIPANT_RESPONSE: ({
-    step,
     position,
     value,
   }: {
-    step: Field | Step
     position: CurrentPosition
     value: any
   }) => void
