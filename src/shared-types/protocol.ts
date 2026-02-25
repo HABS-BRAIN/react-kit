@@ -30,6 +30,7 @@ export type Step = {
   content: StepContent
   goNext: GoNextStrategy
   meta?: StepMeta
+  operatorInstructions?: string
 }
 
 type TextContent = {

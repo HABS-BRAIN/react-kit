@@ -48,6 +48,7 @@ export interface Field {
   label?: string
   type: 'slider' | 'textarea' | 'text' | 'number' | 'radio' | 'select' | 'checkbox'
   config?: SliderSingleProps | InputNumberProps | InputProps | CheckboxGroupProps | RadioGroupProps | SelectProps | TextAreaProps 
+  operatorInstructions?: string
 }
 
 export interface Form extends SequenceBlockCommonProps {
