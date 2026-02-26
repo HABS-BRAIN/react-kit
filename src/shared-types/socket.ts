@@ -97,9 +97,11 @@ export interface OperatorServerEvents extends CommonServerEvents {
   GET_SESSION_STATE: () => void
   DISPLAY_PARTICIPANT_RESPONSE: ({
     position,
+    parentPosition,
     value,
   }: {
     position: CurrentPosition
+    parentPosition?: CurrentPosition
     value: any
   }) => void
 }
