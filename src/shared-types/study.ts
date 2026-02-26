@@ -2,6 +2,7 @@ import { EMOTION_CATEGORIES, MAIN_EMOTION } from './emotions'
 import { Form } from './form'
 import { Organization } from './organization'
 import { Protocol, ProtocolTemplate } from './protocol'
+import { KeycloakUser } from './user'
 
 export interface Calibration {
   [ProtocolTemplate.EMOTINDER]: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
@@ -28,14 +29,23 @@ export interface StudyFullInfo extends Omit<Study, 'sequence'> {
         runNextBlockAfterEachStep?: number
         mixSteps?: boolean
         templateId: string
+        events?: any[]
       })
     | ({ form: Form } & {
         type: 'form'
         runNextBlockAfterEachStep?: number
         mixSteps?: boolean
         templateId: string
+        events?: any[]
       })
   )[]
+}
+
+export interface CompletedStudy extends StudyFullInfo {
+  operator: KeycloakUser
+  startTime: string
+  pushedEventsToLSL: any[]
+  participantId: string //keycloak user id of the participant
 }
 
 export interface Study {
