@@ -36,64 +36,46 @@ export function extractCurrentStep(
       blockIndex: number
       stepIndex: number
     } {
-  const { blockIndex, stepIndex } = linearIndexToPosition(studyFullInfo, linearIndex)
-  const block = studyFullInfo.sequence[blockIndex]
+  const linearSequence = extractLinearStudySequence(studyFullInfo)
+  const item = linearSequence[linearIndex]
   
-  if (!block) {
-    throw new Error(`Block with index ${blockIndex} not found in study sequence`)
-  }
-
-  const steps = getBlockSteps(block)
-  const step = steps[stepIndex]
-  
-  if (!step) {
+  if (!item) {
     throw new Error(
-      `Step with index ${stepIndex} not found in block at index ${blockIndex}`,
+      `Linear index ${linearIndex} is out of bounds (0-${linearSequence.length - 1})`,
     )
   }
 
-  if (block.type === 'protocol') {
-    return { step: step as Step, type: 'protocol', linearIndex, blockIndex, stepIndex }
+  if (item.type === 'protocol') {
+    return {
+      step: item.step as Step,
+      type: 'protocol',
+      linearIndex: item.linearIndex,
+      blockIndex: item.blockIndex,
+      stepIndex: item.stepIndex,
+    }
   }
 
-  return { step: step as Field, type: 'form', linearIndex, blockIndex, stepIndex }
+  return {
+    step: item.step as Field,
+    type: 'form',
+    linearIndex: item.linearIndex,
+    blockIndex: item.blockIndex,
+    stepIndex: item.stepIndex,
+  }
 }
 
 export function linearIndexToPosition(
   studyFullInfo: StudyFullInfo,
   linearIndex: number,
 ): { blockIndex: number; stepIndex: number } {
-  let accumulatedIndex = 0
-
-  for (let blockIndex = 0; blockIndex < studyFullInfo.sequence.length; blockIndex++) {
-    const block = studyFullInfo.sequence[blockIndex]
-    const steps = getBlockSteps(block)
-    const nextBlock = studyFullInfo.sequence[blockIndex + 1]
-    const copyCount = getCopiedStepsCount(block, nextBlock)
-    
-    // Each step in this block occupies (1 + copyCount) positions in linear sequence
-    const stepStride = 1 + copyCount
-    const blockContribution = steps.length * stepStride
-    
-    // Check if the target index falls within this block's range
-    if (linearIndex < accumulatedIndex + blockContribution) {
-      const offsetInBlock = linearIndex - accumulatedIndex
-      const stepIndex = Math.floor(offsetInBlock / stepStride)
-      const positionInStride = offsetInBlock % stepStride
-      
-      if (positionInStride === 0) {
-        // Original step from current block
-        return { blockIndex, stepIndex }
-      } else {
-        // Copied step from next block
-        return { blockIndex: blockIndex + 1, stepIndex: positionInStride - 1 }
-      }
-    }
-    
-    accumulatedIndex += blockContribution
+  const linearSequence = extractLinearStudySequence(studyFullInfo)
+  const item = linearSequence[linearIndex]
+  
+  if (!item) {
+    throw new Error(`Linear index ${linearIndex} is out of bounds`)
   }
-
-  throw new Error(`Linear index ${linearIndex} is out of bounds`)
+  
+  return { blockIndex: item.blockIndex, stepIndex: item.stepIndex }
 }
 
 export function linearIndexToBlockIndex(
@@ -110,21 +92,47 @@ export function linearIndexToStepIndex(
   return linearIndexToPosition(studyFullInfo, linearIndex).stepIndex
 }
 
+export type LinearSequenceItem = {
+  step: Step | Field
+  type: 'protocol' | 'form'
+  blockIndex: number
+  stepIndex: number
+  linearIndex: number
+}
+
 export function extractLinearStudySequence(
   studyFullInfo: StudyFullInfo,
-): (Step | Field)[] {
-  const linearSequence: (Step | Field)[] = []
+): LinearSequenceItem[] {
+  const linearSequence: LinearSequenceItem[] = []
+  let linearIndex = 0
 
   studyFullInfo.sequence.forEach((block, blockIndex) => {
     const steps = getBlockSteps(block)
     const nextBlock = studyFullInfo.sequence[blockIndex + 1]
-    const nextSteps = nextBlock ? getBlockSteps(nextBlock) : []
     const copyCount = getCopiedStepsCount(block, nextBlock)
 
-    steps.forEach((step) => {
-      linearSequence.push(step)
-      if (copyCount > 0) {
-        linearSequence.push(...nextSteps.slice(0, copyCount))
+    steps.forEach((step, stepIndex) => {
+      // Add the original step from current block
+      linearSequence.push({
+        step,
+        type: block.type,
+        blockIndex,
+        stepIndex,
+        linearIndex: linearIndex++,
+      })
+
+      // Add copied steps from next block
+      if (copyCount > 0 && nextBlock) {
+        const nextSteps = getBlockSteps(nextBlock)
+        for (let i = 0; i < Math.min(copyCount, nextSteps.length); i++) {
+          linearSequence.push({
+            step: nextSteps[i],
+            type: nextBlock.type,
+            blockIndex: blockIndex + 1,
+            stepIndex: i,
+            linearIndex: linearIndex++,
+          })
+        }
       }
     })
   })
