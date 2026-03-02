@@ -108,10 +108,10 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   PARTICIPANT_SELECTED: (data: SelectedParticipantPayload) => void
   STUDY_SELECTED_BY_OPERATOR: ({
     study,
-    currentPosition,
+    currentStep,
   }: {
     study: StudyFullInfo
-    currentPosition: CurrentPosition
+    currentStep?: LinearSequenceItem
   }) => void
   PRESENT_REPLY_FORM: () => void
   USER_INTERACTION_COMPLETED: (index: number) => void
