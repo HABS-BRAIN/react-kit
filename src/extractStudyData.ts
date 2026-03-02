@@ -21,60 +21,24 @@ const getCopiedStepsCount = (
 export function extractCurrentStep(
   studyFullInfo: StudyFullInfo,
   linearIndex: number,
-):
-  | {
-      step: Step
-      type: 'protocol'
-      linearIndex: number
-      blockIndex: number
-      stepIndex: number
-    }
-  | {
-      step: Field
-      type: 'form'
-      linearIndex: number
-      blockIndex: number
-      stepIndex: number
-    } {
+): LinearSequenceItem {
   const linearSequence = extractLinearStudySequence(studyFullInfo)
   const item = linearSequence[linearIndex]
-  
+
   if (!item) {
     throw new Error(
       `Linear index ${linearIndex} is out of bounds (0-${linearSequence.length - 1})`,
     )
   }
 
-  if (item.type === 'protocol') {
-    return {
-      step: item.step as Step,
-      type: 'protocol',
-      linearIndex: item.linearIndex,
-      blockIndex: item.blockIndex,
-      stepIndex: item.stepIndex,
-    }
-  }
-
-  return {
-    step: item.step as Field,
-    type: 'form',
-    linearIndex: item.linearIndex,
-    blockIndex: item.blockIndex,
-    stepIndex: item.stepIndex,
-  }
+  return item
 }
 
 export function linearIndexToPosition(
   studyFullInfo: StudyFullInfo,
   linearIndex: number,
 ): { blockIndex: number; stepIndex: number } {
-  const linearSequence = extractLinearStudySequence(studyFullInfo)
-  const item = linearSequence[linearIndex]
-  
-  if (!item) {
-    throw new Error(`Linear index ${linearIndex} is out of bounds`)
-  }
-  
+  const item = extractCurrentStep(studyFullInfo, linearIndex)
   return { blockIndex: item.blockIndex, stepIndex: item.stepIndex }
 }
 
@@ -82,22 +46,48 @@ export function linearIndexToBlockIndex(
   studyFullInfo: StudyFullInfo,
   linearIndex: number,
 ): number {
-  return linearIndexToPosition(studyFullInfo, linearIndex).blockIndex
+  return extractCurrentStep(studyFullInfo, linearIndex).blockIndex
 }
 
 export function linearIndexToStepIndex(
   studyFullInfo: StudyFullInfo,
   linearIndex: number,
 ): number {
-  return linearIndexToPosition(studyFullInfo, linearIndex).stepIndex
+  return extractCurrentStep(studyFullInfo, linearIndex).stepIndex
 }
 
-export type LinearSequenceItem = {
-  step: Step | Field
-  type: 'protocol' | 'form'
+type LinearSequenceItemCommon = {
   blockIndex: number
   stepIndex: number
   linearIndex: number
+}
+
+export type LinearSequenceItem =
+  | ({ step: Step; type: 'protocol' } & LinearSequenceItemCommon)
+  | ({ step: Field; type: 'form' } & LinearSequenceItemCommon)
+
+function createSequenceItem(
+  block: StudyFullInfo['sequence'][number],
+  stepIndex: number,
+  blockIndex: number,
+  linearIndex: number,
+): LinearSequenceItem {
+  if (block.type === 'protocol') {
+    return {
+      step: block.protocol.steps[stepIndex],
+      type: 'protocol',
+      blockIndex,
+      stepIndex,
+      linearIndex,
+    }
+  }
+  return {
+    step: block.form.fields[stepIndex],
+    type: 'form',
+    blockIndex,
+    stepIndex,
+    linearIndex,
+  }
 }
 
 export function extractLinearStudySequence(
@@ -111,27 +101,13 @@ export function extractLinearStudySequence(
     const nextBlock = studyFullInfo.sequence[blockIndex + 1]
     const copyCount = getCopiedStepsCount(block, nextBlock)
 
-    steps.forEach((step, stepIndex) => {
-      // Add the original step from current block
-      linearSequence.push({
-        step,
-        type: block.type,
-        blockIndex,
-        stepIndex,
-        linearIndex: linearIndex++,
-      })
+    steps.forEach((_, stepIndex) => {
+      linearSequence.push(createSequenceItem(block, stepIndex, blockIndex, linearIndex++))
 
-      // Add copied steps from next block
       if (copyCount > 0 && nextBlock) {
         const nextSteps = getBlockSteps(nextBlock)
         for (let i = 0; i < Math.min(copyCount, nextSteps.length); i++) {
-          linearSequence.push({
-            step: nextSteps[i],
-            type: nextBlock.type,
-            blockIndex: blockIndex + 1,
-            stepIndex: i,
-            linearIndex: linearIndex++,
-          })
+          linearSequence.push(createSequenceItem(nextBlock, i, blockIndex + 1, linearIndex++))
         }
       }
     })
