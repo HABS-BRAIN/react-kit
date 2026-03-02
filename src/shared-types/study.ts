@@ -8,7 +8,7 @@ export interface Calibration {
   [ProtocolTemplate.EMOTINDER]: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
 }
 
-export type CurrentPosition = { blockIndex: number; stepIndex: number, linearSequenceIndex: number }
+export type CurrentPosition = number
 
 export enum StudiesOrderBy {
   TITLE = 'title',

@@ -1,6 +1,6 @@
 import { Field } from './shared-types/form'
 import { Step } from './shared-types/protocol'
-import { CurrentPosition, StudyFullInfo } from './shared-types/study'
+import { StudyFullInfo } from './shared-types/study'
 
 const getBlockSteps = (block: StudyFullInfo['sequence'][number]): Step[] | Field[] => {
   if (block.type === 'protocol') {
@@ -20,79 +20,94 @@ const getCopiedStepsCount = (
 
 export function extractCurrentStep(
   studyFullInfo: StudyFullInfo,
-  currentPosition: CurrentPosition,
+  linearIndex: number,
 ):
   | {
       step: Step
       type: 'protocol'
       linearIndex: number
+      blockIndex: number
+      stepIndex: number
     }
   | {
       step: Field
       type: 'form'
       linearIndex: number
+      blockIndex: number
+      stepIndex: number
     } {
-  const { blockIndex, stepIndex } = currentPosition
+  const { blockIndex, stepIndex } = linearIndexToPosition(studyFullInfo, linearIndex)
   const block = studyFullInfo.sequence[blockIndex]
+  
   if (!block) {
     throw new Error(`Block with index ${blockIndex} not found in study sequence`)
   }
 
-  const currentStepLinearIndex = currentPositionToLinearIndex(
-    studyFullInfo,
-    currentPosition,
-  )
+  const steps = getBlockSteps(block)
+  const step = steps[stepIndex]
+  
+  if (!step) {
+    throw new Error(
+      `Step with index ${stepIndex} not found in block at index ${blockIndex}`,
+    )
+  }
 
   if (block.type === 'protocol') {
-    const step = block.protocol.steps[stepIndex]
-    if (!step) {
-      throw new Error(
-        `Step with index ${stepIndex} not found in block at index ${blockIndex}`,
-      )
-    }
-    return { step, type: 'protocol', linearIndex: currentStepLinearIndex }
+    return { step: step as Step, type: 'protocol', linearIndex, blockIndex, stepIndex }
   }
 
-  const step = block.form.fields[stepIndex]
-  if (!step) {
-    throw new Error(
-      `Step with index ${stepIndex} not found in block at index ${blockIndex}`,
-    )
-  }
-  return { step, type: 'form', linearIndex: currentStepLinearIndex }
+  return { step: step as Field, type: 'form', linearIndex, blockIndex, stepIndex }
 }
 
-export function currentPositionToLinearIndex(
+export function linearIndexToPosition(
   studyFullInfo: StudyFullInfo,
-  currentPosition: CurrentPosition,
+  linearIndex: number,
+): { blockIndex: number; stepIndex: number } {
+  let accumulatedIndex = 0
+
+  for (let blockIndex = 0; blockIndex < studyFullInfo.sequence.length; blockIndex++) {
+    const block = studyFullInfo.sequence[blockIndex]
+    const steps = getBlockSteps(block)
+    const nextBlock = studyFullInfo.sequence[blockIndex + 1]
+    const copyCount = getCopiedStepsCount(block, nextBlock)
+    
+    // Each step in this block occupies (1 + copyCount) positions in linear sequence
+    const stepStride = 1 + copyCount
+    const blockContribution = steps.length * stepStride
+    
+    // Check if the target index falls within this block's range
+    if (linearIndex < accumulatedIndex + blockContribution) {
+      const offsetInBlock = linearIndex - accumulatedIndex
+      const stepIndex = Math.floor(offsetInBlock / stepStride)
+      const positionInStride = offsetInBlock % stepStride
+      
+      if (positionInStride === 0) {
+        // Original step from current block
+        return { blockIndex, stepIndex }
+      } else {
+        // Copied step from next block
+        return { blockIndex: blockIndex + 1, stepIndex: positionInStride - 1 }
+      }
+    }
+    
+    accumulatedIndex += blockContribution
+  }
+
+  throw new Error(`Linear index ${linearIndex} is out of bounds`)
+}
+
+export function linearIndexToBlockIndex(
+  studyFullInfo: StudyFullInfo,
+  linearIndex: number,
 ): number {
-  const { blockIndex, stepIndex } = currentPosition
-  const block = studyFullInfo.sequence[blockIndex]
-  if (!block) {
-    throw new Error(`Block with index ${blockIndex} not found in study sequence`)
-  }
+  return linearIndexToPosition(studyFullInfo, linearIndex).blockIndex
+}
 
-  const step = getBlockSteps(block)[stepIndex]
-  if (!step) {
-    throw new Error(
-      `Step with index ${stepIndex} not found in block at index ${blockIndex}`,
-    )
-  }
-
-  const linearIndex = studyFullInfo.sequence
-    .slice(0, blockIndex)
-    .reduce((index, currentBlock, indexInSequence) => {
-      const stepsCount = getBlockSteps(currentBlock).length
-      const copiedStepsCount = getCopiedStepsCount(
-        currentBlock,
-        studyFullInfo.sequence[indexInSequence + 1],
-      )
-      return index + stepsCount * (1 + copiedStepsCount)
-    }, 0)
-
-  const nextBlock = studyFullInfo.sequence[blockIndex + 1]
-  const copiedStepsCount = getCopiedStepsCount(block, nextBlock)
-  return linearIndex + stepIndex * (1 + copiedStepsCount)
+export function linearIndexToStepIndex(
+  studyFullInfo: StudyFullInfo,
+  linearIndex: number,
+): number {
+  return linearIndexToPosition(studyFullInfo, linearIndex).stepIndex
 }
 
 export function extractLinearStudySequence(
