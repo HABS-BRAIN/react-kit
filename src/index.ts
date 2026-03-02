@@ -7,7 +7,11 @@ import { useStateCallback } from './useStateCallback'
 import { useDev } from './useDev'
 import { useStrongPassword } from './useStrongPassword'
 import { generateUniqueColor } from './generateUniqueColor'
-import { extractCurrentStep, extractLinearStudySequence} from './extractStudyData'
+import {
+  currentPositionToLinearIndex,
+  extractCurrentStep,
+  extractLinearStudySequence,
+} from './extractStudyData'
 import { getFilename } from './getFilename'
 
 export {
@@ -20,6 +24,7 @@ export {
   useStateWithDebounce,
   useStateWithPrevious,
   generateUniqueColor,
+  currentPositionToLinearIndex,
   extractCurrentStep,
   extractLinearStudySequence,
   getFilename,
