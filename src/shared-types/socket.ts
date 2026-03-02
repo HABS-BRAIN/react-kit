@@ -5,6 +5,7 @@ import { Organization } from './organization'
 import { GoNextCheckbox, GoNextSliders, Step } from './protocol'
 import { CurrentPosition, StudyFullInfo } from './study'
 import { KeycloakUser } from './user'
+import { LinearSequenceItem } from '../extractStudyData'
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser
@@ -51,20 +52,9 @@ export type NamespaceClientEventsMap = {
   '/remote-participant-control': RemoteParticipantClientEvents
 }
 
-export type NewStepPayload =
-  | {
-      step: Step
-      position: CurrentPosition
-      type: 'protocol'
-    }
-  | {
-      step: Field
-      position: CurrentPosition
-      type: 'form'
-    }
 interface CommonServerEvents {
   PLAYBACK_STATE_CHANGED: (playbackState: PlaybackState) => void
-  NEW_STEP: (newStep: NewStepPayload) => void
+  NEW_STEP: (newStep: LinearSequenceItem) => void
 }
 interface CommonClientEvents {
   getSessionState: (
