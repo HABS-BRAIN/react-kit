@@ -56,15 +56,15 @@ export function linearIndexToStepIndex(
   return extractCurrentStep(studyFullInfo, linearIndex).stepIndex
 }
 
-type LinearSequenceItemCommon = {
+export type LinearSequenceItemPosition = {
   blockIndex: number
   stepIndex: number
   linearIndex: number
 }
 
 export type LinearSequenceItem =
-  | ({ step: Step; type: 'protocol' } & LinearSequenceItemCommon)
-  | ({ step: Field; type: 'form' } & LinearSequenceItemCommon)
+  | ({ step: Step; type: 'protocol' } & LinearSequenceItemPosition)
+  | ({ step: Field; type: 'form' } & LinearSequenceItemPosition)
 
 function createSequenceItem(
   block: StudyFullInfo['sequence'][number],
