@@ -1,11 +1,10 @@
 import { Socket as IOSocket } from 'socket.io'
-import { Field } from './form'
+import { LinearSequenceItem } from '../extractStudyData'
 import { ConnectedLabStation } from './lab-station'
 import { Organization } from './organization'
-import { GoNextCheckbox, GoNextSliders, Step } from './protocol'
-import { CurrentPosition, StudyFullInfo } from './study'
+import { GoNextCheckbox, GoNextSliders } from './protocol'
+import { StudyFullInfo } from './study'
 import { KeycloakUser } from './user'
-import { LinearSequenceItem } from '../extractStudyData'
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser
@@ -70,10 +69,10 @@ export interface OperatorClientEvents extends CommonClientEvents, DevEvents {
   participantSelected: ({ participant, organization }: SelectedParticipantPayload) => void
   studySelected: ({
     study,
-    currentPosition,
+    currentStep,
   }: {
     study: StudyFullInfo
-    currentPosition: CurrentPosition
+    currentStep: LinearSequenceItem | undefined
   }) => void
   playbackControl: (newPlaybackState: PlaybackState) => void
   startFakeDeviceStream: () => void
@@ -86,16 +85,16 @@ export interface OperatorServerEvents extends CommonServerEvents {
   STEP_MEDIA_PREFETCHED: (info: PrefetchedMediaInfoPayload) => void
   GET_SESSION_STATE: () => void
   DISPLAY_PARTICIPANT_RESPONSE: ({
-    position,
+    currentStep,
     value,
   }: {
-    position: CurrentPosition
+    currentStep: LinearSequenceItem
     value: any
   }) => void
 }
 
 export interface ProtocolPlayerClientEvents extends CommonClientEvents {
-  participantLaunchStudy: (position: CurrentPosition) => void
+  participantLaunchStudy: (currentStep: LinearSequenceItem) => void
   audioStarted: (data: any) => void
   audioEnded: (data: any) => void
   videoStarted: (data: any) => void

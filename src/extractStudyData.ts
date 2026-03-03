@@ -107,7 +107,9 @@ export function extractLinearStudySequence(
       if (copyCount > 0 && nextBlock) {
         const nextSteps = getBlockSteps(nextBlock)
         for (let i = 0; i < Math.min(copyCount, nextSteps.length); i++) {
-          linearSequence.push(createSequenceItem(nextBlock, i, blockIndex + 1, linearIndex++))
+          linearSequence.push(
+            createSequenceItem(nextBlock, i, blockIndex + 1, linearIndex++),
+          )
         }
       }
     })

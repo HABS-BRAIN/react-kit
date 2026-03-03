@@ -1,6 +1,7 @@
+import { LinearSequenceItem } from '../extractStudyData'
 import { Organization } from './organization'
 import { PlaybackState } from './socket'
-import { CurrentPosition, StudyFullInfo } from './study'
+import { StudyFullInfo } from './study'
 import { KeycloakUser } from './user'
 
 export interface ConnectedLabStation {
@@ -12,7 +13,7 @@ export interface ConnectedLabStation {
     participantControl: boolean
     protocolPlayer: boolean
   }
-  currentPosition?: CurrentPosition
+  currentStep?: LinearSequenceItem
   study?: StudyFullInfo
   operator?: KeycloakUser
   participant?: KeycloakUser
