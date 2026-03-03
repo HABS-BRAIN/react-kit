@@ -9,51 +9,17 @@ const getBlockSteps = (block: StudyFullInfo['sequence'][number]): Step[] | Field
   return block.form.fields
 }
 
-const getCopiedStepsCount = (
+const getCopiedBlocksCount = (
   block: StudyFullInfo['sequence'][number],
-  nextBlock?: StudyFullInfo['sequence'][number],
+  sequenceLength: number,
+  blockIndex: number,
 ): number => {
-  const nextSteps = nextBlock ? getBlockSteps(nextBlock) : []
-  const copyCount = block.runNextBlockAfterEachStep ?? 0
-  return copyCount > 0 ? Math.min(copyCount, nextSteps.length) : 0
-}
-
-export function extractCurrentStep(
-  studyFullInfo: StudyFullInfo,
-  linearIndex: number,
-): LinearSequenceItem {
-  const linearSequence = extractLinearStudySequence(studyFullInfo)
-  const item = linearSequence[linearIndex]
-
-  if (!item) {
-    throw new Error(
-      `Linear index ${linearIndex} is out of bounds (0-${linearSequence.length - 1})`,
-    )
+  const requestedCount = block.runNextBlockAfterEachStep ?? 0
+  if (requestedCount <= 0) {
+    return 0
   }
-
-  return item
-}
-
-export function linearIndexToPosition(
-  studyFullInfo: StudyFullInfo,
-  linearIndex: number,
-): { blockIndex: number; stepIndex: number } {
-  const item = extractCurrentStep(studyFullInfo, linearIndex)
-  return { blockIndex: item.blockIndex, stepIndex: item.stepIndex }
-}
-
-export function linearIndexToBlockIndex(
-  studyFullInfo: StudyFullInfo,
-  linearIndex: number,
-): number {
-  return extractCurrentStep(studyFullInfo, linearIndex).blockIndex
-}
-
-export function linearIndexToStepIndex(
-  studyFullInfo: StudyFullInfo,
-  linearIndex: number,
-): number {
-  return extractCurrentStep(studyFullInfo, linearIndex).stepIndex
+  const availableCount = sequenceLength - blockIndex - 1
+  return Math.min(requestedCount, availableCount)
 }
 
 export type LinearSequenceItemPosition = {
@@ -72,21 +38,27 @@ function createSequenceItem(
   blockIndex: number,
   linearIndex: number,
 ): LinearSequenceItem {
-  if (block.type === 'protocol') {
-    return {
-      step: block.protocol.steps[stepIndex],
-      type: 'protocol',
-      blockIndex,
-      stepIndex,
-      linearIndex,
-    }
-  }
-  return {
-    step: block.form.fields[stepIndex],
-    type: 'form',
+  const item = {
+    step: block.type === 'protocol' ? block.protocol.steps[stepIndex] : block.form.fields[stepIndex],
+    type: block.type,
     blockIndex,
     stepIndex,
     linearIndex,
+  }
+  return item as LinearSequenceItem
+}
+
+function addBlockToSequence(
+  linearSequence: LinearSequenceItem[],
+  block: StudyFullInfo['sequence'][number],
+  blockIndex: number,
+  linearIndexRef: { value: number },
+): void {
+  const steps = getBlockSteps(block)
+  for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
+    linearSequence.push(
+      createSequenceItem(block, stepIndex, blockIndex, linearIndexRef.value++),
+    )
   }
 }
 
@@ -94,34 +66,43 @@ export function extractLinearStudySequence(
   studyFullInfo: StudyFullInfo,
 ): LinearSequenceItem[] {
   const linearSequence: LinearSequenceItem[] = []
-  let linearIndex = 0
-  const copiedPrefixByBlockIndex = new Map<number, number>()
+  const linearIndex = { value: 0 }
+  let skipUntilBlockIndex = -1
 
-  studyFullInfo.sequence.forEach((block, blockIndex) => {
-    const steps = getBlockSteps(block)
-    const nextBlock = studyFullInfo.sequence[blockIndex + 1]
-    const copyCount = getCopiedStepsCount(block, nextBlock)
-    const alreadyCopiedPrefix = copiedPrefixByBlockIndex.get(blockIndex) ?? 0
-
-    if (copyCount > 0 && nextBlock) {
-      const nextBlockIndex = blockIndex + 1
-      const nextAlreadyCopiedPrefix = copiedPrefixByBlockIndex.get(nextBlockIndex) ?? 0
-      copiedPrefixByBlockIndex.set(nextBlockIndex, Math.max(nextAlreadyCopiedPrefix, copyCount))
+  for (let blockIndex = 0; blockIndex < studyFullInfo.sequence.length; blockIndex++) {
+    // Skip blocks that were already injected as copied blocks
+    if (blockIndex <= skipUntilBlockIndex) {
+      continue
     }
 
-    for (let stepIndex = alreadyCopiedPrefix; stepIndex < steps.length; stepIndex++) {
-      linearSequence.push(createSequenceItem(block, stepIndex, blockIndex, linearIndex++))
+    const currentBlock = studyFullInfo.sequence[blockIndex]
+    const currentSteps = getBlockSteps(currentBlock)
+    const numBlocksToInject = getCopiedBlocksCount(
+      currentBlock,
+      studyFullInfo.sequence.length,
+      blockIndex,
+    )
 
-      if (copyCount > 0 && nextBlock) {
-        const nextSteps = getBlockSteps(nextBlock)
-        for (let i = 0; i < Math.min(copyCount, nextSteps.length); i++) {
-          linearSequence.push(
-            createSequenceItem(nextBlock, i, blockIndex + 1, linearIndex++),
-          )
-        }
+    // Mark blocks to skip (they'll be injected after each step)
+    if (numBlocksToInject > 0) {
+      skipUntilBlockIndex = blockIndex + numBlocksToInject
+    }
+
+    // Process each step in the current block
+    for (let stepIndex = 0; stepIndex < currentSteps.length; stepIndex++) {
+      // Add the current step
+      linearSequence.push(
+        createSequenceItem(currentBlock, stepIndex, blockIndex, linearIndex.value++),
+      )
+
+      // Inject the next N blocks after this step
+      for (let offset = 1; offset <= numBlocksToInject; offset++) {
+        const nextBlockIndex = blockIndex + offset
+        const nextBlock = studyFullInfo.sequence[nextBlockIndex]
+        addBlockToSequence(linearSequence, nextBlock, nextBlockIndex, linearIndex)
       }
     }
-  })
+  }
 
   return linearSequence
 }

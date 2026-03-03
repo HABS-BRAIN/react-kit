@@ -8,11 +8,7 @@ import { useDev } from './useDev'
 import { useStrongPassword } from './useStrongPassword'
 import { generateUniqueColor } from './generateUniqueColor'
 import {
-  extractCurrentStep,
   extractLinearStudySequence,
-  linearIndexToBlockIndex,
-  linearIndexToPosition,
-  linearIndexToStepIndex,
 } from './extractStudyData'
 import { getFilename } from './getFilename'
 
@@ -26,11 +22,7 @@ export {
   useStateWithDebounce,
   useStateWithPrevious,
   generateUniqueColor,
-  extractCurrentStep,
   extractLinearStudySequence,
-  linearIndexToBlockIndex,
-  linearIndexToPosition,
-  linearIndexToStepIndex,
   getFilename,
 }
 

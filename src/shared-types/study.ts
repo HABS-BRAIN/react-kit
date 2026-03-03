@@ -22,6 +22,8 @@ export interface SequenceBlockCommonProps {
 }
 
 export interface StudyFullInfo extends Omit<Study, 'sequence'> {
+  templateId?: string
+  participantId?: string
   sequence: (
     | ({ protocol: Protocol } & {
         type: 'protocol'

@@ -19,6 +19,7 @@
     "typescript:watch": "node npm-scripts.mjs typescript:watch",
     "lint": "node npm-scripts.mjs lint",
     "test": "node npm-scripts.mjs test",
+    "dev": "clear && ts-node ./debug.ts",
     "coverage": "node npm-scripts.mjs coverage",
     "install-deps": "node npm-scripts.mjs install-deps",
     "release:check": "node npm-scripts.mjs release:check",
@@ -60,6 +61,7 @@
     "react": "^19.0.0",
     "react-dom": "19.0.0",
     "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2"
   },
   "dependencies": {
