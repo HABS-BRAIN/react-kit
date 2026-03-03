@@ -15,6 +15,6 @@
     "declarationMap": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "src/shared-types", "declaration.d.ts", "debug.ts"],
+  "include": ["src", "src/shared-types", "declaration.d.ts"],
   "exclude": ["node_modules", "build"]
 }
