@@ -95,13 +95,21 @@ export function extractLinearStudySequence(
 ): LinearSequenceItem[] {
   const linearSequence: LinearSequenceItem[] = []
   let linearIndex = 0
+  const copiedPrefixByBlockIndex = new Map<number, number>()
 
   studyFullInfo.sequence.forEach((block, blockIndex) => {
     const steps = getBlockSteps(block)
     const nextBlock = studyFullInfo.sequence[blockIndex + 1]
     const copyCount = getCopiedStepsCount(block, nextBlock)
+    const alreadyCopiedPrefix = copiedPrefixByBlockIndex.get(blockIndex) ?? 0
 
-    steps.forEach((_, stepIndex) => {
+    if (copyCount > 0 && nextBlock) {
+      const nextBlockIndex = blockIndex + 1
+      const nextAlreadyCopiedPrefix = copiedPrefixByBlockIndex.get(nextBlockIndex) ?? 0
+      copiedPrefixByBlockIndex.set(nextBlockIndex, Math.max(nextAlreadyCopiedPrefix, copyCount))
+    }
+
+    for (let stepIndex = alreadyCopiedPrefix; stepIndex < steps.length; stepIndex++) {
       linearSequence.push(createSequenceItem(block, stepIndex, blockIndex, linearIndex++))
 
       if (copyCount > 0 && nextBlock) {
@@ -112,7 +120,7 @@ export function extractLinearStudySequence(
           )
         }
       }
-    })
+    }
   })
 
   return linearSequence
