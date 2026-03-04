@@ -60,7 +60,7 @@ type PersonalizedContent = {
   type: 'personalized'
   personalized: {
     mediaType: 'image' | 'audio' | 'video'
-    mediaPerCategory: number
+    mediaPerEmotion: number
   }
 }
 
