@@ -12,5 +12,6 @@ export interface ProtocolMedia {
   _id: string
   filename: string
   originalName: string
+  url: string
   duration?: number // For audio and video files (in seconds)
 }
