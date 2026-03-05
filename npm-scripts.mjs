@@ -3,9 +3,7 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs';
 import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PKG = JSON.parse(fs.readFileSync('./package.json').toString());
 const IS_WINDOWS = os.platform() === 'win32';
 const MAYOR_VERSION = PKG.version.split('.')[0];
@@ -35,7 +33,7 @@ async function run()
 			buildTypescript(/* force */ false);
 
 			break;
-
+		}
 
 		case 'typescript:build':
 		{
@@ -153,7 +151,6 @@ function replaceVersion()
 
 	traverseDirectory('lib');
 }
-
 
 function deleteLib()
 {
