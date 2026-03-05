@@ -41,10 +41,7 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const dependencyRef = packageJson.dependencies?.[PACKAGE_NAME];
 
 if (!dependencyRef) {
-  info(
-    `Dependency "${PACKAGE_NAME}" not found in package.json. Skipping validation.`,
-  );
-  process.exit(0);
+  fail(`Dependency "${PACKAGE_NAME}" is missing in package.json dependencies`);
 }
 
 const requiredRef = REQUIRED_REF_BY_BRANCH[targetBranch];

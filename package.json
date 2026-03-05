@@ -16,7 +16,7 @@
   },
   "scripts": {
     "prepare": "node npm-scripts.mjs prepare",
-    "postinstall": "node package-branch-validation/check-habs-react-kit-branch.js",
+    "postinstall": "node package-branch-validation/setup.js",
     "typescript:build": "node npm-scripts.mjs typescript:build",
     "typescript:watch": "node npm-scripts.mjs typescript:watch",
     "lint": "node npm-scripts.mjs lint",
