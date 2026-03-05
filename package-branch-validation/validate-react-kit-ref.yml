@@ -23,4 +23,4 @@ jobs:
       - name: Validate dependency ref for target branch
         env:
           TARGET_BRANCH: ${{ github.base_ref || github.ref_name }}
-        run: node scripts/check-habs-react-kit-branch.js
+        run: node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js
