@@ -192,7 +192,6 @@ function copyValidationScripts()
 		appendLog(`__dirname: ${__dirname}`);
 		appendLog(`process.cwd(): ${process.cwd()}`);
 		appendLog(`INIT_CWD env: ${process.env.INIT_CWD || 'undefined'}`);
-		appendLog(`npm_package_json env: ${process.env.npm_package_json || 'undefined'}`);
 		
 		// Try to find the consuming project root
 		let targetDir = null;
@@ -250,25 +249,55 @@ function copyValidationScripts()
 			return;
 		}
 
+		// Define file-to-destination mappings
+		const fileMapping = {
+			'check-habs-react-kit-branch.js': 'scripts',
+			'validate-react-kit-ref.yml': '.github/workflows',
+		};
+
 		const files = fs.readdirSync(sourceDir);
 		appendLog(`Found files in source: ${files.join(', ')}`);
 
 		let copiedCount = 0;
 		files.forEach(file => {
 			const sourceFile = path.join(sourceDir, file);
-			const targetFile = path.join(targetDir, file);
+			const stats = fs.statSync(sourceFile);
+			
+			// Skip directories, only copy files
+			if (!stats.isFile())
+			{
+				return;
+			}
 
 			try
 			{
-				// Skip directories, only copy files
-				const stats = fs.statSync(sourceFile);
-				if (stats.isFile())
+				// Determine destination directory based on file name
+				const destSubDir = fileMapping[file];
+				let targetFile;
+				
+				if (destSubDir)
 				{
-					fs.copyFileSync(sourceFile, targetFile);
-					appendLog(`SUCCESS: Copied ${file} to ${targetFile}`);
-					logInfo(`Copied: ${file}`);
-					copiedCount++;
+					const destinationDir = path.join(targetDir, destSubDir);
+					
+					// Create directory if it doesn't exist
+					if (!fs.existsSync(destinationDir))
+					{
+						fs.mkdirSync(destinationDir, { recursive: true });
+						appendLog(`Created directory: ${destinationDir}`);
+					}
+					
+					targetFile = path.join(destinationDir, file);
 				}
+				else
+				{
+					// Default: copy to root if no mapping defined
+					targetFile = path.join(targetDir, file);
+				}
+
+				fs.copyFileSync(sourceFile, targetFile);
+				appendLog(`SUCCESS: Copied ${file} to ${targetFile}`);
+				logInfo(`Copied: ${file} to ${destSubDir || 'root'}`);
+				copiedCount++;
 			}
 			catch (err)
 			{
