@@ -17,7 +17,7 @@ Copy the workflow file from the package to your client's GitHub Actions:
 
 ```bash
 mkdir -p .github/workflows
-cp node_modules/habs-react-kit/.github/workflows/validate-react-kit-ref.yml .github/workflows/
+cp node_modules/habs-react-kit/package-branch-validation/validate-react-kit-ref.yml .github/workflows/
 ```
 
 Or manually create `.github/workflows/validate-react-kit-ref.yml` with this content:
@@ -48,7 +48,7 @@ jobs:
       - name: Validate dependency ref for target branch
         env:
           TARGET_BRANCH: ${{ github.base_ref || github.ref_name }}
-        run: node node_modules/habs-react-kit/scripts/check-habs-react-kit-branch.js
+        run: node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js
 ```
 
 ### 2. Add npm Script (Optional)
@@ -58,7 +58,7 @@ Add this script to your `package.json` for local validation:
 ```json
 {
   "scripts": {
-    "validate:react-kit": "node node_modules/habs-react-kit/scripts/check-habs-react-kit-branch.js"
+    "validate:react-kit": "node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js"
   }
 }
 ```
