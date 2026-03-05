@@ -11,6 +11,12 @@ if (!fs.existsSync(packageJsonPath)) {
 }
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+// Skip if we're installing the package itself (not a client using it)
+if (packageJson.name === PACKAGE_NAME) {
+  process.exit(0);
+}
+
 const dependencyRef = packageJson.dependencies?.[PACKAGE_NAME];
 
 // Only proceed if habs-react-kit is a dependency
@@ -18,8 +24,9 @@ if (!dependencyRef) {
   process.exit(0);
 }
 
-// Paths
-const workflowDir = path.resolve(process.cwd(), '.github', 'workflows');
+// Paths - resolve relative to project root, not node_modules
+const projectRoot = process.cwd();
+const workflowDir = path.resolve(projectRoot, '.github', 'workflows');
 const workflowFile = path.join(workflowDir, 'validate-react-kit-ref.yml');
 const sourceWorkflowFile = path.join(__dirname, 'validate-react-kit-ref.yml');
 const checkScriptFile = path.join(__dirname, 'check-habs-react-kit-branch.js');
