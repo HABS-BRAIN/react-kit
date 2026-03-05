@@ -1,6 +1,6 @@
 # Branch Validation Setup for habs-react-kit Clients
 
-This document explains how to set up branch validation in your client project that uses the `habs-react-kit` package.
+This document explains how branch validation works for client projects using the `habs-react-kit` package.
 
 ## Overview
 
@@ -9,72 +9,24 @@ The validation ensures that your client application's branch matches the corresp
 - `stage` branch → uses `habs-react-kit#stage`
 - `prod` branch → uses `habs-react-kit#prod`
 
-## Setup Instructions
+## Automatic Validation (Recommended)
 
-### 1. Add the GitHub Actions Workflow
-
-Copy the workflow file from the package to your client's GitHub Actions:
+The validation runs **automatically** after installing dependencies via a `postinstall` script:
 
 ```bash
-mkdir -p .github/workflows
-cp node_modules/habs-react-kit/package-branch-validation/validate-react-kit-ref.yml .github/workflows/
+npm install
+# or
+pnpm install
 ```
 
-Or manually create `.github/workflows/validate-react-kit-ref.yml` with this content:
+The script will:
+1. Determine your current Git branch
+2. Check that the `habs-react-kit` dependency references the correct branch
+3. Fail with a clear error if there's a mismatch
 
-```yaml
-name: Validate habs-react-kit ref
+### Setup Instructions
 
-on:
-  push:
-    branches:
-      - '**'
-  pull_request:
-    branches:
-      - '**'
-
-jobs:
-  validate-ref:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Validate dependency ref for target branch
-        env:
-          TARGET_BRANCH: ${{ github.base_ref || github.ref_name }}
-        run: node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js
-```
-
-### 2. Add npm Script (Optional)
-
-Add this script to your `package.json` for local validation:
-
-```json
-{
-  "scripts": {
-    "validate:react-kit": "node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js"
-  }
-}
-```
-
-Then run it locally:
-
-```bash
-npm run validate:react-kit
-```
-
-### 3. Configure Branch Rules
-
-Update `package.json`'s `dependencies` section with the appropriate reference based on your branch:
+Simply ensure your `package.json` dependencies reference the correct branch for each branch:
 
 **For dev branch:**
 ```json
@@ -103,6 +55,62 @@ Update `package.json`'s `dependencies` section with the appropriate reference ba
 }
 ```
 
+That's it! The validation will run automatically on `npm install` or `pnpm install`.
+
+## Manual Validation (Optional)
+
+Add this script to your `package.json` for manual validation at any time:
+
+```json
+{
+  "scripts": {
+    "validate:react-kit": "node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js"
+  }
+}
+```
+
+Then run it manually:
+
+```bash
+npm run validate:react-kit
+```
+
+## GitHub Actions Workflow (Optional)
+
+If you want to enforce validation in your CI/CD pipeline, create `.github/workflows/validate-react-kit-ref.yml`:
+
+```yaml
+name: Validate habs-react-kit ref
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  validate-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate dependency ref for target branch
+        env:
+          TARGET_BRANCH: ${{ github.base_ref || github.ref_name }}
+        run: node node_modules/habs-react-kit/package-branch-validation/check-habs-react-kit-branch.js
+```
+
 ## How It Works
 
 1. The validation script reads your `package.json` file
@@ -124,6 +132,7 @@ Update `package.json`'s `dependencies` section with the appropriate reference ba
 
 ## Troubleshooting
 
-- **Script not found**: Ensure `habs-react-kit` is installed in `node_modules`
+- **Postinstall script not running**: Ensure npm/pnpm is allowed to run lifecycle scripts
 - **Wrong branch detected**: The script uses `git rev-parse --abbrev-ref HEAD` locally, or `TARGET_BRANCH` env var in CI
 - **Dependency validation fails**: Check that your branch name matches one of the configured branches (dev, stage, prod)
+
