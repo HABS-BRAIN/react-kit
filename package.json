@@ -8,7 +8,9 @@
   "files": [
     "npm-scripts.mjs",
     "lib",
-    "resources"
+    "resources",
+    "scripts",
+    ".github"
   ],
   "engines": {
     "node": ">=16"
