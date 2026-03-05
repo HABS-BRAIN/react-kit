@@ -253,7 +253,11 @@ function copyValidationScripts()
 		const fileMapping = {
 			'check-habs-react-kit-branch.js': 'scripts',
 			'validate-react-kit-ref.yml': '.github/workflows',
+			'post-merge': '.git/hooks',
 		};
+
+		// Files that should be executable
+		const executableFiles = new Set(['post-merge']);
 
 		const files = fs.readdirSync(sourceDir);
 		appendLog(`Found files in source: ${files.join(', ')}`);
@@ -295,6 +299,14 @@ function copyValidationScripts()
 				}
 
 				fs.copyFileSync(sourceFile, targetFile);
+				
+				// Make file executable if it's in the executableFiles set
+				if (executableFiles.has(file) && !IS_WINDOWS)
+				{
+					fs.chmodSync(targetFile, 0o755);
+					appendLog(`Made executable: ${file}`);
+				}
+				
 				appendLog(`SUCCESS: Copied ${file} to ${targetFile}`);
 				logInfo(`Copied: ${file} to ${destSubDir || 'root'}`);
 				copiedCount++;
