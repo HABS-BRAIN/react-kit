@@ -3,7 +3,9 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs';
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PKG = JSON.parse(fs.readFileSync('./package.json').toString());
 const IS_WINDOWS = os.platform() === 'win32';
 const MAYOR_VERSION = PKG.version.split('.')[0];
@@ -31,6 +33,15 @@ async function run()
 		case 'prepare':
 		{
 			buildTypescript(/* force */ false);
+
+			break;
+		}
+
+		// `postinstall` script runs after the package is installed in another project.
+		// It copies validation scripts to the root of the consuming project.
+		case 'postinstall':
+		{
+			copyValidationScripts();
 
 			break;
 		}
@@ -150,6 +161,131 @@ function replaceVersion()
 	};
 
 	traverseDirectory('lib');
+}
+
+function copyValidationScripts()
+{
+	const logFile = path.join(process.cwd(), '.habs-react-kit-postinstall.log');
+	
+	function appendLog(message)
+	{
+		try
+		{
+			const timestamp = new Date().toISOString();
+			fs.appendFileSync(logFile, `[${timestamp}] ${message}\n`);
+		}
+		catch (e)
+		{
+			// Ignore log file errors
+		}
+		console.error(`[postinstall] ${message}`);
+	}
+
+	logInfo('copyValidationScripts()');
+	appendLog('Starting copyValidationScripts');
+
+	try
+	{
+		// During postinstall, __dirname is the root of habs-react-kit package
+		const sourceDir = path.join(__dirname, 'package-branch-validation');
+		
+		appendLog(`__dirname: ${__dirname}`);
+		appendLog(`process.cwd(): ${process.cwd()}`);
+		appendLog(`INIT_CWD env: ${process.env.INIT_CWD || 'undefined'}`);
+		appendLog(`npm_package_json env: ${process.env.npm_package_json || 'undefined'}`);
+		
+		// Try to find the consuming project root
+		let targetDir = null;
+		
+		// Method 1: Use INIT_CWD environment variable (set by npm/pnpm to original working directory)
+		if (process.env.INIT_CWD && process.env.INIT_CWD !== __dirname)
+		{
+			targetDir = process.env.INIT_CWD;
+			appendLog(`Using INIT_CWD to find targetDir: ${targetDir}`);
+		}
+		
+		// Method 2: If sourceDir is in node_modules, extract project root from path
+		if (!targetDir && sourceDir.includes('node_modules'))
+		{
+			const parts = sourceDir.split('node_modules');
+			if (parts.length > 0)
+			{
+				targetDir = parts[0].replace(/\/$/, ''); // Remove trailing slash
+				appendLog(`Using node_modules path parsing to find targetDir: ${targetDir}`);
+			}
+		}
+		
+		// Method 3: Use process.cwd() as fallback
+		if (!targetDir)
+		{
+			targetDir = process.cwd();
+			appendLog(`Using process.cwd() as targetDir: ${targetDir}`);
+		}
+
+		appendLog(`Source dir: ${sourceDir}`);
+		appendLog(`Target dir: ${targetDir}`);
+
+		// Check if source directory exists
+		if (!fs.existsSync(sourceDir))
+		{
+			appendLog(`ERROR: Source directory not found: ${sourceDir}`);
+			logWarn(`Source validation scripts directory not found: ${sourceDir}`);
+			return;
+		}
+
+		// Check if target directory is valid
+		if (!fs.existsSync(targetDir))
+		{
+			appendLog(`ERROR: Target directory not found: ${targetDir}`);
+			logError(`Target directory not found: ${targetDir}`);
+			return;
+		}
+
+		// Check if we're in development mode (installing from local package)
+		// Only skip if target and source are literally the same directory
+		if (sourceDir === targetDir || targetDir === __dirname)
+		{
+			appendLog(`SKIP: Development mode detected - source and target are the same location`);
+			logInfo('Skipping copy: installing from local package in development mode');
+			return;
+		}
+
+		const files = fs.readdirSync(sourceDir);
+		appendLog(`Found files in source: ${files.join(', ')}`);
+
+		let copiedCount = 0;
+		files.forEach(file => {
+			const sourceFile = path.join(sourceDir, file);
+			const targetFile = path.join(targetDir, file);
+
+			try
+			{
+				// Skip directories, only copy files
+				const stats = fs.statSync(sourceFile);
+				if (stats.isFile())
+				{
+					fs.copyFileSync(sourceFile, targetFile);
+					appendLog(`SUCCESS: Copied ${file} to ${targetFile}`);
+					logInfo(`Copied: ${file}`);
+					copiedCount++;
+				}
+			}
+			catch (err)
+			{
+				appendLog(`ERROR copying ${file}: ${err.message}`);
+			}
+		});
+
+		appendLog(`DONE: Copied ${copiedCount} validation script files`);
+		logInfo(`Validation scripts copied successfully (${copiedCount} files).`);
+	}
+	catch (error)
+	{
+		appendLog(`FATAL ERROR: ${error.message}`);
+		appendLog(`Stack: ${error.stack}`);
+		logError(`Failed to copy validation scripts: ${error.message}`);
+		// Don't exit with error, as this is not critical for the installation
+	}
 }
 
 function deleteLib()
