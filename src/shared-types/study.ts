@@ -1,9 +1,9 @@
 import { EMOTION_CATEGORIES, MAIN_EMOTION } from './emotions'
 import { Form } from './form'
+import { MongoDocumentFields } from './mongoFields'
 import { Organization } from './organization'
 import { Protocol, ProtocolTemplate } from './protocol'
 import { KeycloakUser } from './user'
-
 export interface Calibration {
   [ProtocolTemplate.EMOTINDER]: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
 }
@@ -21,7 +21,7 @@ export interface SequenceBlockCommonProps {
   templateId?: string
 }
 
-export interface StudyFullInfo extends Omit<Study, 'sequence'> {
+export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequence'> {
   templateId?: string
   participantId?: string
   sequence: (

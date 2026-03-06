@@ -1,10 +1,12 @@
-import { MAIN_EMOTION } from './emotions'
+import { EMOTION_CATEGORIES, MAIN_EMOTION } from './emotions'
 
-export type StepMeta = {
-  lslMarkerKey?: MarkerKeyWithStart
-  customStartMarker?: number
-  customFinishMarker?: number
-}
+export type StepMeta = Partial<{
+  lslMarkerKey: MarkerKeyWithStart | keyof typeof MAIN_EMOTION
+  customStartMarker: number
+  customFinishMarker: number
+  category: keyof typeof EMOTION_CATEGORIES
+  fallbackCategoriesUsed: boolean
+}>
 
 export const LSLMarkerKey = {
   ...MAIN_EMOTION,

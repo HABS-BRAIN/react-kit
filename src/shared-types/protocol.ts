@@ -1,5 +1,5 @@
 import type { SliderSingleProps } from 'antd'
-import { ProtocolMedia } from './media'
+import { Media } from './media'
 import { CSSProperties } from 'react'
 import { KeycloakUser } from './user'
 import { StepMeta } from './step-meta'
@@ -40,19 +40,19 @@ type TextContent = {
 
 type ImageContent = {
   type: 'image'
-  image: ProtocolMedia
+  image: Media
   // alt?: string
 }
 
 type AudioContent = {
   type: 'audio'
-  audio: ProtocolMedia
+  audio: Media
   maxDuration?: number
 }
 
 type VideoContent = {
   type: 'video'
-  video: ProtocolMedia
+  video: Media
   maxDuration?: number
 }
 

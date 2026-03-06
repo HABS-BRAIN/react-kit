@@ -13,3 +13,5 @@
 /.vscode
 # JetBrains IDE stuff.
 /.idea
+
+debug-output.json
