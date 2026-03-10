@@ -19,4 +19,7 @@ export interface ConnectedLabStation {
   participant?: KeycloakUser
   organization?: Organization
   playbackState?: PlaybackState
+
+  currentInteractionIndex?: number
+  isPlayingMedia?: boolean
 }
