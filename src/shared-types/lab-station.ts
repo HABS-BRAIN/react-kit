@@ -17,9 +17,9 @@ export interface ConnectedLabStation {
   study?: StudyFullInfo
   operator?: KeycloakUser
   participant?: KeycloakUser
+  participantLanguageInterface?: string
   organization?: Organization
   playbackState?: PlaybackState
-
   currentInteractionIndex?: number
   awaitingParticipantResponse?: boolean //sets to true when step content is finished and there is userInteraction in goNext strategy
 }
