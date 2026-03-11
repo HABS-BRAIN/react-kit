@@ -67,6 +67,7 @@ interface DevEvents {
 }
 export interface OperatorClientEvents extends CommonClientEvents, DevEvents {
   participantSelected: ({ participant, organization }: SelectedParticipantPayload) => void
+  setParticipantLanguage: (language: string) => void
   studySelected: ({
     study,
     currentStep,
@@ -114,6 +115,7 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   }) => void
   PRESENT_REPLY_FORM: () => void
   USER_INTERACTION_COMPLETED: (index: number) => void
+  OPERATOR_SET_LANGUAGE: (language: string) => void
 }
 
 export type RemoteParticipantServerEvents = ProtocolPlayerServerEvents
