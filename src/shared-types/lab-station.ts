@@ -21,5 +21,5 @@ export interface ConnectedLabStation {
   playbackState?: PlaybackState
 
   currentInteractionIndex?: number
-  isPlayingMedia?: boolean
+  awaitingParticipantResponse?: boolean //sets to true when step content is finished and there is userInteraction in goNext strategy
 }
