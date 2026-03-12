@@ -13,3 +13,39 @@ to test this package locally follow this steps:
 
 
 pnpm install git+ssh://git@github.com:HABS-BRAIN/react-kit.git#dev
+
+---
+
+## Versioning & Tagging
+
+Bump version and create a git tag:
+
+```bash
+pnpm version patch   # 1.0.0 → 1.0.1
+pnpm version minor   # 1.0.0 → 1.1.0
+pnpm version major   # 1.0.0 → 2.0.0
+```
+
+### Push the new tag to remote
+
+```bash
+git push origin --tags
+```
+
+Or push a specific tag:
+
+```bash
+git push origin v1.0.1
+```
+
+### Remove a tag locally
+
+```bash
+git tag -d v1.0.1
+```
+
+### Remove a tag from remote
+
+```bash
+git push origin --delete v1.0.1
+```

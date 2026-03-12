@@ -23,3 +23,13 @@ export interface ConnectedLabStation {
   currentInteractionIndex?: number
   awaitingParticipantResponse?: boolean //sets to true when step content is finished and there is userInteraction in goNext strategy
 }
+
+export interface LabStationVersionCheckResponse {
+  repoOwner: string;
+  repoName: string;
+  currentVersion: string;
+  latestVersion: string | null;
+  updateAvailable: boolean;
+  versionExistsInReleases: boolean;
+  releaseTags: string[];
+}
