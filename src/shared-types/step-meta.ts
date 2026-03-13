@@ -24,7 +24,7 @@ export const LSLMarkerKey = {
   MOVE_ARMS: 'MOVE_ARMS',
 } as const
 
-export type LSLMarkerKey = (typeof LSLMarkerKey)[keyof typeof LSLMarkerKey]
+export type LSLMarkerKey = keyof typeof LSLMarkerKey
 
 export type MarkerKeyWithStart = Exclude<LSLMarkerKey, 'PLAYBACK'>
 
