@@ -8,7 +8,6 @@ export interface Calibration {
   [ProtocolTemplate.EMOTINDER]: Record<MAIN_EMOTION, EMOTION_CATEGORIES[]>
 }
 
-
 export enum StudiesOrderBy {
   TITLE = 'title',
   CREATED_AT = 'createdAt',
@@ -27,14 +26,16 @@ export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequenc
   sequence: (
     | ({ protocol: Protocol } & {
         type: 'protocol'
-        runNextBlockAfterEachStep?: number
+        runNextBlockForEachStep?: number // How many next blocks should run for each step
+        nextBlockExecutes?: 'before' | 'after'
         mixSteps?: boolean
         templateId: string
         events?: any[]
       })
     | ({ form: Form } & {
         type: 'form'
-        runNextBlockAfterEachStep?: number
+        runNextBlockForEachStep?: number // How many next blocks should run for each step
+        nextBlockExecutes?: 'before' | 'after'
         mixSteps?: boolean
         templateId: string
         events?: any[]
@@ -57,7 +58,8 @@ export interface Study {
   sequence: {
     type: 'protocol' | 'form'
     _id: Protocol['_id'] | Form['_id']
-    runNextBlockAfterEachStep?: number
+    runNextBlockForEachStep?: number
+    nextBlockExecutes?: 'before' | 'after'
     mixSteps?: boolean
   }[]
   belongsToOrganization: Organization['id'][]

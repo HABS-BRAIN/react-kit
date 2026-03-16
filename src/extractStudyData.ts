@@ -14,7 +14,7 @@ const getCopiedBlocksCount = (
   sequenceLength: number,
   blockIndex: number,
 ): number => {
-  const requestedCount = block.runNextBlockAfterEachStep ?? 0
+  const requestedCount = block.runNextBlockForEachStep ?? 0
   if (requestedCount <= 0) {
     return 0
   }
@@ -82,24 +82,33 @@ export function extractLinearStudySequence(
       studyFullInfo.sequence.length,
       blockIndex,
     )
+    const nextBlockExecutes = currentBlock.nextBlockExecutes ?? 'after'
 
-    // Mark blocks to skip (they'll be injected after each step)
+    // Mark blocks to skip (they'll be injected for each step)
     if (numBlocksToInject > 0) {
       skipUntilBlockIndex = blockIndex + numBlocksToInject
     }
 
     // Process each step in the current block
     for (let stepIndex = 0; stepIndex < currentSteps.length; stepIndex++) {
-      // Add the current step
+      if (nextBlockExecutes === 'before') {
+        for (let offset = 1; offset <= numBlocksToInject; offset++) {
+          const nextBlockIndex = blockIndex + offset
+          const nextBlock = studyFullInfo.sequence[nextBlockIndex]
+          addBlockToSequence(linearSequence, nextBlock, nextBlockIndex, linearIndex)
+        }
+      }
+
       linearSequence.push(
         createSequenceItem(currentBlock, stepIndex, blockIndex, linearIndex.value++),
       )
 
-      // Inject the next N blocks after this step
-      for (let offset = 1; offset <= numBlocksToInject; offset++) {
-        const nextBlockIndex = blockIndex + offset
-        const nextBlock = studyFullInfo.sequence[nextBlockIndex]
-        addBlockToSequence(linearSequence, nextBlock, nextBlockIndex, linearIndex)
+      if (nextBlockExecutes === 'after') {
+        for (let offset = 1; offset <= numBlocksToInject; offset++) {
+          const nextBlockIndex = blockIndex + offset
+          const nextBlock = studyFullInfo.sequence[nextBlockIndex]
+          addBlockToSequence(linearSequence, nextBlock, nextBlockIndex, linearIndex)
+        }
       }
     }
   }
