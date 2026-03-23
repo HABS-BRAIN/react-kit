@@ -1,26 +1,19 @@
 import { Field } from './shared-types/form'
 import { Step } from './shared-types/protocol'
-import { StudyFullInfo } from './shared-types/study'
+import { SequenceBlockItem, StudyFullInfo } from './shared-types/study'
 
-const getBlockSteps = (block: StudyFullInfo['sequence'][number]): Step[] | Field[] => {
+type SequenceBlock = StudyFullInfo['sequence'][number]
+type ResolvedBlock = { block: SequenceBlock; index: number }
+
+const getBlockSteps = (block: SequenceBlock): Step[] | Field[] => {
   if (block.type === 'protocol') {
     return block.protocol.steps
   }
   return block.form.fields
 }
 
-const getCopiedBlocksCount = (
-  block: StudyFullInfo['sequence'][number],
-  sequenceLength: number,
-  blockIndex: number,
-): number => {
-  const requestedCount = block.runNextBlockForEachStep ?? 0
-  if (requestedCount <= 0) {
-    return 0
-  }
-  const availableCount = sequenceLength - blockIndex - 1
-  return Math.min(requestedCount, availableCount)
-}
+const getBlockId = (block: SequenceBlock): string =>
+  block.type === 'protocol' ? block.protocol._id : block.form._id
 
 export type LinearSequenceItemPosition = {
   blockIndex: number
@@ -33,7 +26,7 @@ export type LinearSequenceItem =
   | ({ step: Field; type: 'form' } & LinearSequenceItemPosition)
 
 function createSequenceItem(
-  block: StudyFullInfo['sequence'][number],
+  block: SequenceBlock,
   stepIndex: number,
   blockIndex: number,
   linearIndex: number,
@@ -50,7 +43,7 @@ function createSequenceItem(
 
 function addBlockToSequence(
   linearSequence: LinearSequenceItem[],
-  block: StudyFullInfo['sequence'][number],
+  block: SequenceBlock,
   blockIndex: number,
   linearIndexRef: { value: number },
 ): void {
@@ -62,53 +55,76 @@ function addBlockToSequence(
   }
 }
 
+function injectCompanion(
+  linearSequence: LinearSequenceItem[],
+  companion: SequenceBlockItem,
+  mainStepIndex: number,
+  blockByIdMap: Map<string, ResolvedBlock>,
+  linearIndexRef: { value: number },
+): void {
+  const resolved = blockByIdMap.get(companion._id)
+  if (!resolved) return
+
+  if (companion.mixSteps) {
+    // One companion step per main step, cycling through the companion's steps
+    const companionSteps = getBlockSteps(resolved.block)
+    linearSequence.push(
+      createSequenceItem(
+        resolved.block,
+        mainStepIndex % companionSteps.length,
+        resolved.index,
+        linearIndexRef.value++,
+      ),
+    )
+  } else {
+    // Full companion block for every main step
+    addBlockToSequence(linearSequence, resolved.block, resolved.index, linearIndexRef)
+  }
+}
+
 export function extractLinearStudySequence(
   studyFullInfo: StudyFullInfo,
 ): LinearSequenceItem[] {
   const linearSequence: LinearSequenceItem[] = []
   const linearIndex = { value: 0 }
-  let skipUntilBlockIndex = -1
+
+  // Build an id→block map and collect all IDs that are used as companions
+  const blockByIdMap = new Map<string, ResolvedBlock>()
+  const companionIds = new Set<string>()
+
+  studyFullInfo.sequence.forEach((block, index) => {
+    const resolved = { block, index }
+    // Support both new snapshots (companion references remapped to generated ids)
+    // and older snapshots (companion references point to template ids).
+    blockByIdMap.set(getBlockId(block), resolved)
+    blockByIdMap.set(block.templateId, resolved)
+
+    for (const c of [...(block.beforeBlocks ?? []), ...(block.afterBlocks ?? [])]) {
+      companionIds.add(c._id)
+    }
+  })
 
   for (let blockIndex = 0; blockIndex < studyFullInfo.sequence.length; blockIndex++) {
-    // Skip blocks that were already injected as copied blocks
-    if (blockIndex <= skipUntilBlockIndex) {
+    const currentBlock = studyFullInfo.sequence[blockIndex]
+
+    // Companion blocks are injected inline — skip them as standalone entries
+    if (companionIds.has(getBlockId(currentBlock)) || companionIds.has(currentBlock.templateId)) {
       continue
     }
 
-    const currentBlock = studyFullInfo.sequence[blockIndex]
     const currentSteps = getBlockSteps(currentBlock)
-    const numBlocksToInject = getCopiedBlocksCount(
-      currentBlock,
-      studyFullInfo.sequence.length,
-      blockIndex,
-    )
-    const nextBlockExecutes = currentBlock.nextBlockExecutes ?? 'after'
+    const beforeBlocks = currentBlock.beforeBlocks ?? []
+    const afterBlocks = currentBlock.afterBlocks ?? []
 
-    // Mark blocks to skip (they'll be injected for each step)
-    if (numBlocksToInject > 0) {
-      skipUntilBlockIndex = blockIndex + numBlocksToInject
-    }
-
-    // Process each step in the current block
     for (let stepIndex = 0; stepIndex < currentSteps.length; stepIndex++) {
-      if (nextBlockExecutes === 'before') {
-        for (let offset = 1; offset <= numBlocksToInject; offset++) {
-          const nextBlockIndex = blockIndex + offset
-          const nextBlock = studyFullInfo.sequence[nextBlockIndex]
-          addBlockToSequence(linearSequence, nextBlock, nextBlockIndex, linearIndex)
-        }
+      for (const companion of beforeBlocks) {
+        injectCompanion(linearSequence, companion, stepIndex, blockByIdMap, linearIndex)
       }
 
-      linearSequence.push(
-        createSequenceItem(currentBlock, stepIndex, blockIndex, linearIndex.value++),
-      )
+      linearSequence.push(createSequenceItem(currentBlock, stepIndex, blockIndex, linearIndex.value++))
 
-      if (nextBlockExecutes === 'after') {
-        for (let offset = 1; offset <= numBlocksToInject; offset++) {
-          const nextBlockIndex = blockIndex + offset
-          const nextBlock = studyFullInfo.sequence[nextBlockIndex]
-          addBlockToSequence(linearSequence, nextBlock, nextBlockIndex, linearIndex)
-        }
+      for (const companion of afterBlocks) {
+        injectCompanion(linearSequence, companion, stepIndex, blockByIdMap, linearIndex)
       }
     }
   }

@@ -26,8 +26,6 @@ export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequenc
   sequence: (
     | ({ protocol: Protocol } & {
         type: 'protocol'
-        runNextBlockForEachStep?: number // How many next blocks should run for each step
-        nextBlockExecutes?: 'before' | 'after'
         beforeBlocks?: SequenceBlockItem[]
         afterBlocks?: SequenceBlockItem[]
         mixSteps?: boolean
@@ -36,8 +34,6 @@ export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequenc
       })
     | ({ form: Form } & {
         type: 'form'
-        runNextBlockForEachStep?: number // How many next blocks should run for each step
-        nextBlockExecutes?: 'before' | 'after'
         beforeBlocks?: SequenceBlockItem[]
         afterBlocks?: SequenceBlockItem[]
         mixSteps?: boolean
@@ -56,6 +52,8 @@ export interface CompletedStudy extends StudyFullInfo {
 
 export interface SequenceBlockItem {
   type: 'protocol' | 'form'
+  // In templates this points to the referenced block template id.
+  // In participant snapshots it can be remapped to the generated block id.
   _id: Protocol['_id'] | Form['_id']
   mixSteps?: boolean
 }
@@ -66,8 +64,6 @@ export interface Study {
   children?: Study['_id'][]
   description?: string
   sequence: (SequenceBlockItem & {
-    runNextBlockForEachStep?: number
-    nextBlockExecutes?: 'before' | 'after'
     beforeBlocks?: SequenceBlockItem[]
     afterBlocks?: SequenceBlockItem[]
   })[]
