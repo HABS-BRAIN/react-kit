@@ -68,6 +68,9 @@ function injectCompanion(
   if (companion.mixSteps) {
     // One companion step per main step, cycling through the companion's steps
     const companionSteps = getBlockSteps(resolved.block)
+    if (companionSteps.length === 0) {
+      return
+    }
     linearSequence.push(
       createSequenceItem(
         resolved.block,
@@ -116,12 +119,23 @@ export function extractLinearStudySequence(
     const beforeBlocks = currentBlock.beforeBlocks ?? []
     const afterBlocks = currentBlock.afterBlocks ?? []
 
-    for (let stepIndex = 0; stepIndex < currentSteps.length; stepIndex++) {
+    const mainStepCount = currentSteps.length
+    // If the block has no main steps (e.g. EMOTINDER preview produced zero media steps) but
+    // has companions, still run one pass so before/after blocks appear in the linear order.
+    const runCompanionOnlyPass =
+      mainStepCount === 0 && (beforeBlocks.length > 0 || afterBlocks.length > 0)
+    const iterations = runCompanionOnlyPass ? 1 : mainStepCount
+
+    for (let stepIndex = 0; stepIndex < iterations; stepIndex++) {
       for (const companion of beforeBlocks) {
         injectCompanion(linearSequence, companion, stepIndex, blockByIdMap, linearIndex)
       }
 
-      linearSequence.push(createSequenceItem(currentBlock, stepIndex, blockIndex, linearIndex.value++))
+      if (mainStepCount > 0) {
+        linearSequence.push(
+          createSequenceItem(currentBlock, stepIndex, blockIndex, linearIndex.value++),
+        )
+      }
 
       for (const companion of afterBlocks) {
         injectCompanion(linearSequence, companion, stepIndex, blockByIdMap, linearIndex)
