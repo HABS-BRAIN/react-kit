@@ -5,6 +5,12 @@ import { Organization } from './organization'
 import { GoNextCheckbox, GoNextSliders } from './protocol'
 import { StudyFullInfo } from './study'
 import { KeycloakUser } from './user'
+import type {
+  LslVizBatchPayload,
+  LslVizListAck,
+  LslVizListStreamsPayload,
+  LslVizStartPayload,
+} from './lsl-viz'
 
 export type SelectedParticipantPayload = {
   participant: KeycloakUser
@@ -78,6 +84,12 @@ export interface OperatorClientEvents extends CommonClientEvents, DevEvents {
   playbackControl: (newPlaybackState: PlaybackState) => void
   startFakeDeviceStream: () => void
   stopFakeDeviceStream: () => void
+  lslVizListStreams: (
+    payload: LslVizListStreamsPayload | undefined,
+    ack: (result: LslVizListAck) => void,
+  ) => void
+  lslVizStart: (payload: LslVizStartPayload) => void
+  lslVizStop: () => void
 }
 
 export interface OperatorServerEvents extends CommonServerEvents {
@@ -92,6 +104,8 @@ export interface OperatorServerEvents extends CommonServerEvents {
     currentStep: LinearSequenceItem
     value: any
   }) => void
+  LSL_VIZ_BATCH: (payload: LslVizBatchPayload) => void
+  LSL_VIZ_ERROR: (message: string) => void
 }
 
 export interface ProtocolPlayerClientEvents extends CommonClientEvents {

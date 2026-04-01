@@ -39,5 +39,6 @@ export * from './shared-types/user';
 export * from './shared-types/dto';
 export * from './shared-types/lab-station';
 export * from './shared-types/lab-recorder';
+export * from './shared-types/lsl-viz';
 
 export type { LinearSequenceItem } from './extractStudyData'
