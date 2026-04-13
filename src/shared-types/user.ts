@@ -7,3 +7,8 @@ export interface KeycloakUser {
   lastName: string
   username: string
 }
+
+//for operator guides
+export enum GUIDE_PAGE {
+  SETTING_UP_PARTICIPANT = 'SETTING_UP_PARTICIPANT',
+}

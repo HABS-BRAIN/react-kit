@@ -19,9 +19,18 @@ export type LslVizListStreamsPayload = {
   waitTimeSec?: number
 }
 
+/** Client-selected visualization intent (UI only today; bridge may log or branch later). */
+export type LslVizModeId =
+  | 'eeg_signals'
+  | 'headset_quality'
+  | 'eeg_and_markers'
+  | 'raw_debug'
+
 /** Client → server: begin receiving selected stream(s). */
 export type LslVizStartPayload = {
   streamUids: string[]
+  /** Reserved for future server/UI alignment (e.g. different throttling or routing). */
+  vizMode?: LslVizModeId
   /** Cap of server → client emit rate per stream (default 30). */
   maxEmitHz?: number
   /** Seconds to wait when re-resolving by uid (default 3). */
