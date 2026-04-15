@@ -46,7 +46,7 @@ export interface Option<T = string> {
 
 export interface Field {
   label?: string
-  type: 'slider' | 'textarea' | 'text' | 'number' | 'radio' | 'select' | 'checkbox'
+  type: 'slider' | 'textarea' | 'text' | 'number' | 'radio' | 'select' | 'checkbox' | 'goWhenSubmitted'
   config?: SliderSingleProps | InputNumberProps | InputProps | CheckboxGroupProps | RadioGroupProps | SelectProps | TextAreaProps 
   operatorInstructions?: string
 }
