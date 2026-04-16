@@ -1,4 +1,5 @@
 import type { SliderSingleProps } from 'antd'
+import type { Field } from './form'
 import { Media } from './media'
 import { CSSProperties } from 'react'
 import { KeycloakUser } from './user'
@@ -104,9 +105,23 @@ export type GoNextCheckbox = {
   type: 'checkbox'
 }
 
+/** Frozen copy of a form template at the time the protocol step was authored. */
+export type GoNextFormSnapshot = {
+  title: string
+  description?: string
+  fields: Field[]
+  /** Id of the template used when the snapshot was taken (for display / re-selection). */
+  sourceFormId?: string
+}
+
+export type GoNextForm = {
+  type: 'form'
+  snapshot: GoNextFormSnapshot
+}
+
 export type GoNextUserInteraction = {
   type: 'userInteraction'
-  userInteraction: (GoNextSliders | GoNextCheckbox)[]
+  userInteraction: (GoNextSliders | GoNextCheckbox | GoNextForm)[]
 }
 
 export type GoNextStrategy = GoNextAutoplay | GoNextWhenMediaEnds | GoNextUserInteraction

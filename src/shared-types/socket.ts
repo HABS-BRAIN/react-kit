@@ -2,7 +2,7 @@ import { Socket as IOSocket } from 'socket.io'
 import { LinearSequenceItem } from '../extractStudyData'
 import { ConnectedLabStation } from './lab-station'
 import { Organization } from './organization'
-import { GoNextCheckbox, GoNextSliders } from './protocol'
+import { GoNextCheckbox, GoNextForm, GoNextSliders } from './protocol'
 import { StudyFullInfo } from './study'
 import { KeycloakUser } from './user'
 import type {
@@ -139,18 +139,20 @@ export interface RemoteParticipantClientEvents
   confirmParticipantIdentity: (data: SelectedParticipantPayload) => void
   sliderInputValueChange: (data: any) => void
   sliderInputValueChangeComplete: (data: any) => void
-  formValueSubmitted: (data: any) => void
   // participantLaunchProtocol: (data: any) => void; //I removed this button from tablet. Protocol should be started by operator from the protocol player browser. Otherwise video/audio will not be playing as this window stays untouched
 }
 
 interface InteractionCompletedEvents {
   submitSlidersValues: (data: any) => void
   submitCheckboxValues: (data: any) => void
+  /** Study linear form steps and protocol userInteraction type `form`. */
+  formValueSubmitted: (data: any) => void
 }
 
 export const INTERACTION_COMPLETED_EVENT: {
-  [K in GoNextSliders['type'] | GoNextCheckbox['type']]: keyof InteractionCompletedEvents
+  [K in GoNextSliders['type'] | GoNextCheckbox['type'] | GoNextForm['type']]: keyof InteractionCompletedEvents
 } = {
   sliders: 'submitSlidersValues',
   checkbox: 'submitCheckboxValues',
+  form: 'formValueSubmitted',
 }
