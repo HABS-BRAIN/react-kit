@@ -90,6 +90,7 @@ export interface OperatorClientEvents extends CommonClientEvents, DevEvents {
   ) => void
   lslVizStart: (payload: LslVizStartPayload) => void
   lslVizStop: () => void
+  toggleKiosk: () => void
 }
 
 export interface OperatorServerEvents extends CommonServerEvents {
@@ -130,6 +131,7 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   PRESENT_REPLY_FORM: () => void
   USER_INTERACTION_COMPLETED: (index: number) => void
   OPERATOR_SET_LANGUAGE: (language: string) => void
+  OPERATOR_TOGGLE_KIOSK: () => void
 }
 
 export type RemoteParticipantServerEvents = ProtocolPlayerServerEvents
