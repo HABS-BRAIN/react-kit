@@ -20,6 +20,17 @@ export interface SequenceBlockCommonProps {
   templateId?: string
 }
 
+/**
+ * Optional metadata on **top-level** study sequence entries only.
+ * Consecutive entries that share `sequenceGroupId` form one group.
+ * `sequenceGroupMixOrder` (when true) means block order within that group is randomized when building the linear sequence.
+ * Companion blocks (`beforeBlocks` / `afterBlocks`) do not carry these fields.
+ */
+export type StudySequenceGroupMeta = {
+  sequenceGroupId?: string
+  sequenceGroupMixOrder?: boolean
+}
+
 export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequence'> {
   templateId?: string
   participantId?: string
@@ -31,7 +42,7 @@ export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequenc
         mixSteps?: boolean
         templateId: string
         events?: any[]
-      })
+      } & StudySequenceGroupMeta)
     | ({ form: Form } & {
         type: 'form'
         beforeBlocks?: SequenceBlockItem[]
@@ -39,7 +50,7 @@ export interface StudyFullInfo extends MongoDocumentFields, Omit<Study, 'sequenc
         mixSteps?: boolean
         templateId: string
         events?: any[]
-      })
+      } & StudySequenceGroupMeta)
   )[]
 }
 
@@ -66,6 +77,6 @@ export interface Study {
   sequence: (SequenceBlockItem & {
     beforeBlocks?: SequenceBlockItem[]
     afterBlocks?: SequenceBlockItem[]
-  })[]
+  } & StudySequenceGroupMeta)[]
   belongsToOrganization: Organization['id'][]
 }

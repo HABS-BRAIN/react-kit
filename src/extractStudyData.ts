@@ -1,8 +1,75 @@
 import { Field, Form } from './shared-types/form'
 import { Step, Protocol } from './shared-types/protocol'
-import { SequenceBlockItem, StudyFullInfo } from './shared-types/study'
+import {
+  SequenceBlockItem,
+  StudyFullInfo,
+  StudySequenceGroupMeta,
+} from './shared-types/study'
 
-type SequenceBlock = StudyFullInfo['sequence'][number];
+type SequenceBlock = StudyFullInfo['sequence'][number]
+
+function readGroupId(block: SequenceBlock): string | undefined {
+  const id = (block as SequenceBlock & StudySequenceGroupMeta).sequenceGroupId
+  if (typeof id !== 'string' || id.trim() === '') {
+    return undefined
+  }
+  return id
+}
+
+function readGroupMixOrder(block: SequenceBlock): boolean {
+  return Boolean((block as SequenceBlock & StudySequenceGroupMeta).sequenceGroupMixOrder)
+}
+
+type IndexedSequenceBlock = { block: SequenceBlock; originalIndex: number }
+
+function shuffleIndexedBlocksInPlace(blocks: IndexedSequenceBlock[]): void {
+  for (let i = blocks.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const tmp = blocks[i]!
+    blocks[i] = blocks[j]!
+    blocks[j] = tmp
+  }
+}
+
+/**
+ * Top-level traversal order: consecutive same `sequenceGroupId` form a run;
+ * when `sequenceGroupMixOrder` is true on the run, block order within the run is shuffled once.
+ * `originalIndex` always refers to `studyFullInfo.sequence` so UIs can resolve the block entity.
+ */
+function buildTopLevelTraversalOrder(studyFullInfo: StudyFullInfo): IndexedSequenceBlock[] {
+  const seq = studyFullInfo.sequence
+  const out: IndexedSequenceBlock[] = []
+  let i = 0
+  while (i < seq.length) {
+    const cur = seq[i]!
+    const gid = readGroupId(cur)
+    if (gid) {
+      const run: IndexedSequenceBlock[] = []
+      let j = i
+      while (j < seq.length) {
+        const b = seq[j]!
+        if (readGroupId(b) !== gid) {
+          break
+        }
+        run.push({ block: b, originalIndex: j })
+        j++
+      }
+      if (run.length >= 2) {
+        if (readGroupMixOrder(run[0]!.block)) {
+          shuffleIndexedBlocksInPlace(run)
+        }
+        out.push(...run)
+      } else {
+        out.push({ block: cur, originalIndex: i })
+      }
+      i = j
+    } else {
+      out.push({ block: cur, originalIndex: i })
+      i++
+    }
+  }
+  return out
+}
 type PopulatedCompanionBlock =
   | {
       type: 'protocol';
@@ -105,13 +172,9 @@ export function extractLinearStudySequence(
   const linearSequence: LinearSequenceItem[] = [];
   const linearIndex = { value: 0 };
 
-  for (
-    let blockIndex = 0;
-    blockIndex < studyFullInfo.sequence.length;
-    blockIndex++
-  ) {
-    const currentBlock = studyFullInfo.sequence[blockIndex];
-
+  for (const { block: currentBlock, originalIndex: blockIndex } of buildTopLevelTraversalOrder(
+    studyFullInfo,
+  )) {
     const currentSteps = getBlockSteps(currentBlock);
     const beforeBlocks =
       (currentBlock.beforeBlocks ?? []) as PopulatedCompanionBlock[];
