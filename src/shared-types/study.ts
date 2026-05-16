@@ -79,4 +79,5 @@ export interface Study {
     afterBlocks?: SequenceBlockItem[]
   } & StudySequenceGroupMeta)[]
   belongsToOrganization: Organization['id'][]
+  participantShouldSign?: 'consentement' | string[]
 }
