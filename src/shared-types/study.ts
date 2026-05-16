@@ -79,5 +79,6 @@ export interface Study {
     afterBlocks?: SequenceBlockItem[]
   } & StudySequenceGroupMeta)[]
   belongsToOrganization: Organization['id'][]
-  participantShouldSign?: 'consentement' | string[]
+  /** MongoDB ConsentDocument ids the participant must sign before/during the study */
+  participantShouldSign?: string[]
 }

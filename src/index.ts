@@ -35,6 +35,7 @@ export * from './shared-types/protocol';
 export * from './shared-types/step-meta';
 export * from './shared-types/socket';
 export * from './shared-types/study';
+export * from './shared-types/document';
 export * from './shared-types/user';
 export * from './shared-types/dto';
 export * from './shared-types/lab-station';
