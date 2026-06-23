@@ -14,4 +14,7 @@
 # JetBrains IDE stuff.
 /.idea
 
+# Virtual environments.
+/.venv
+
 debug-output.json

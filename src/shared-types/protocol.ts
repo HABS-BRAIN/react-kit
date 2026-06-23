@@ -65,12 +65,20 @@ type PersonalizedContent = {
   }
 }
 
+type ExternalWebpageContent = {
+  type: 'externalWebpage'
+  url: string
+  /** Optional message shown on player screen while external window is active */
+  placeholderText?: string
+}
+
 export type StepContent = (
   | TextContent
   | ImageContent
   | AudioContent
   | VideoContent
   | PersonalizedContent
+  | ExternalWebpageContent
 ) & {
   style?: CSSProperties
 }
@@ -124,4 +132,14 @@ export type GoNextUserInteraction = {
   userInteraction: (GoNextSliders | GoNextCheckbox | GoNextForm)[]
 }
 
-export type GoNextStrategy = GoNextAutoplay | GoNextWhenMediaEnds | GoNextUserInteraction
+export type GoNextOperatorInteraction = {
+  type: 'operatorInteraction'
+  openButtonLabel?: string
+  completeButtonLabel?: string
+}
+
+export type GoNextStrategy =
+  | GoNextAutoplay
+  | GoNextWhenMediaEnds
+  | GoNextUserInteraction
+  | GoNextOperatorInteraction

@@ -183,17 +183,6 @@ function buildTypescript(force = false)
 
 	deleteLib();
 	executeCmd('tsc');
-
-	// Copy the shared-types folder to the lib directory
-	const sharedTypesDir = path.resolve('src', 'shared-types');
-	const libSharedTypesDir = path.resolve('lib', 'shared-types');
-	if (fs.existsSync(sharedTypesDir)) {
-		fs.mkdirSync(libSharedTypesDir, { recursive: true });
-		fs.readdirSync(sharedTypesDir).forEach(file => {
-			fs.copyFileSync(path.join(sharedTypesDir, file), path.join(libSharedTypesDir, file));
-		});
-		logInfo('Copied shared-types to lib directory.');
-	}
 }
 
 // function generateTypeExports() {
