@@ -91,6 +91,8 @@ export interface OperatorClientEvents extends CommonClientEvents, DevEvents {
   lslVizStart: (payload: LslVizStartPayload) => void
   lslVizStop: () => void
   toggleKiosk: () => void
+  openExternalWebpage: () => void
+  completeExternalWebpage: () => void
 }
 
 export interface OperatorServerEvents extends CommonServerEvents {
@@ -107,6 +109,7 @@ export interface OperatorServerEvents extends CommonServerEvents {
   }) => void
   LSL_VIZ_BATCH: (payload: LslVizBatchPayload) => void
   LSL_VIZ_ERROR: (message: string) => void
+  EXTERNAL_WEBPAGE_OPENED: () => void
 }
 
 export interface ProtocolPlayerClientEvents extends CommonClientEvents {
@@ -132,6 +135,8 @@ export interface ProtocolPlayerServerEvents extends CommonServerEvents {
   USER_INTERACTION_COMPLETED: (index: number) => void
   OPERATOR_SET_LANGUAGE: (language: string) => void
   OPERATOR_TOGGLE_KIOSK: () => void
+  OPEN_EXTERNAL_WEBPAGE: () => void
+  CLOSE_EXTERNAL_WEBPAGE: () => void
 }
 
 export type RemoteParticipantServerEvents = ProtocolPlayerServerEvents
